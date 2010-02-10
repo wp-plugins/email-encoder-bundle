@@ -68,3 +68,6 @@ Credit goes to:
 * [Faycal Tirich](http://faycaltirich.blogspot.com) for using the regular expression from his plugin [WP Emails Encoder](http://faycaltirich.blogspot.com/1979/01/fay-emails-encoder-plugin.html)
 
 == Upgrade Notice ==
+
+= 0.1 =
+The first release.
