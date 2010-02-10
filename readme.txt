@@ -62,7 +62,9 @@ Now your function will be loaded automatically.
 
 Credit goes to:
 
-* [John Godley](http://urbangiraffe.com) for the encode method anti_email_spam() which is taken from his plugin [`Anti-email Spam`](http://urbangiraffe.com/plugins/anti-email-spam/)
+* [John Godley](http://urbangiraffe.com) for the encode method anti_email_spam() which is taken from his plugin [Anti-email Spam](http://urbangiraffe.com/plugins/anti-email-spam/)
 * [Maurits van der Schee](http://www.maurits.vdschee.nl) for the encode method hide_email()
-* [Adam Hunter](http://blueberryware.net) for the encode method email_escape() which is taken from his plugin [`Email Spam Protection`](http://blueberryware.net/2008/09/14/email-spam-protection/)
-* [Faycal Tirich](http://faycaltirich.blogspot.com) for using the regular expression from his plugin [`WP Emails Encoder`](http://faycaltirich.blogspot.com/1979/01/fay-emails-encoder-plugin.html)
+* [Adam Hunter](http://blueberryware.net) for the encode method email_escape() which is taken from his plugin [Email Spam Protection](http://blueberryware.net/2008/09/14/email-spam-protection/)
+* [Faycal Tirich](http://faycaltirich.blogspot.com) for using the regular expression from his plugin [WP Emails Encoder](http://faycaltirich.blogspot.com/1979/01/fay-emails-encoder-plugin.html)
+
+== Upgrade Notice ==
