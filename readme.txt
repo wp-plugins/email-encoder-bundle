@@ -1,4 +1,4 @@
-=== WP Email Encoder Bundle ===
+=== Email Encoder Bundle ===
 Contributors: freelancephp
 Donate link: http://www.freelancephp.net/email-encoder/
 Tags: email, encode, spam, protection, antispam, spambots, mailto
