@@ -236,7 +236,7 @@ class WP_Email_Encoder extends Lim_Email_Encoder {
 				</tr>
 				</table>
 			<?php if ( $this->options['powered_by'] ): ?>
-				<p class="powered-by">Powered by <a rel="external" href="http://www.freelancephp.net/email-encoder/">Email Encode Bundle</a></p>
+				<p class="powered-by">Powered by <a rel="external" href="http://www.freelancephp.net/email-encoder/">Email Encoder Bundle</a></p>
 			<?php endif; ?>
 			</fieldset>
 			</form>
