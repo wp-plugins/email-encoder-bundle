@@ -11,7 +11,7 @@ $( document ).ready(function(){
 			};
 
 		// get the encoded email link
-		$.get( location.href, gets, function(data){
+		$.get( '', gets, function(data){
 			$( '#encoded_output' ).val( data );
 		});
 
