@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: WP Email Encoder Bundle
+Plugin Name: Email Encoder Bundle
 Plugin URI: http://www.freelancephp.net/email-encoder
 Description: Protecting email-spamming by replacing them with one of the registered encoding-methods
 Author: Victor Villaverde Laan
