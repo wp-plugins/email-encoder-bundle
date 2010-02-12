@@ -6,6 +6,7 @@ Description: Protecting email-spamming by replacing them with one of the registe
 Author: Victor Villaverde Laan
 Version: 0.1
 Author URI: http://www.freelancephp.net
+License: Dual licensed under the MIT and GPL licenses
 */
 // include parent class
 require_once dirname(__FILE__) . '/lim-email-encoder.php';

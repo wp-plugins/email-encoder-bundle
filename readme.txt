@@ -18,7 +18,6 @@ Encoding email adresses to protect them from spambots and being used for spammin
 * Add your own methods.
 * Easy to use.
 
-
 == Installation ==
 
 1. Upload `wp-email-encoder-bundle.zip` to the `/wp-content/plugins/` directory

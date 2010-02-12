@@ -6,7 +6,7 @@
  * @package  Lim_Email_Encoder
  * @version  0.1
  * @link     http://www.freelancephp.net/email-encoder
- * @license  http://creativecommons.org/licenses/by/3.0/
+ * @license  Dual licensed under the MIT and GPL licenses
  */
 class Lim_Email_Encoder {
 
