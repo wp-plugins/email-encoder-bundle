@@ -1,45 +1,48 @@
 === Email Encoder Bundle ===
 Contributors: freelancephp
 Donate link: http://www.freelancephp.net/email-encoder/
-Tags: email, encode, spam, protection, antispam, spambots, mailto
+Tags: email, email address, mailto, encoder, encode, spam, protection, antispam, spambots, spamming
 Requires at least: 2.7.0
 Tested up to: 2.9.1
 Stable tag: 0.1
 
-Protecting emails from spambots and spamming by encoding them with one of the encode methods.
+Encoding email adresses to protect them from spambots and being used for spamming.
 
 == Description ==
 
-Protecting emails from spambots and spamming by encoding them with one of the encode methods.
-Easy to use.
+Encoding email adresses to protect them from spambots and being used for spamming.
 
-You can easily also put an email encoder form on your own site.
+* Automatically encodes all email adresses (plain text and mailto links)
+* Put an email encoder form on your own site.
+* Choose the prefered method (or on every request randomly pick one of the methods)
+* Add your own methods.
+* Easy to use.
 
-Developers can also add their own methods.
 
 == Installation ==
 
-1. Upload `wp-email-spam-protect.zip` to the `/wp-content/plugins/` directory
+1. Upload `wp-email-encoder-bundle.zip` to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Place `[encode_email email="youremail@domain.com" display="Mail me"]` in a post
 1. OR place `<?php encode_emal( 'youremail@domain.com', 'Mail me' ); ?>` in your templates
 
-If you want to put an email encoder form on your site. Activate this option on the admin option page and put this code in your post: `[email_encoder_form]`
+If you want to put an email encoder form on your site. Activate this on the admin option page and put this code in your post: `[email_encoder_form]`
 
 == Frequently Asked Questions ==
 
 = Which method should I use? =
 
 The `wp_antispambot` method uses the built-in function of WordPress and does not use any javascript.
-Although JavaScript methods (like email_escape) are probably harder for spambots to understand.
-You could also use the `random` function.
+Although JavaScript methods (like email_escape) are probably better protection agains spambots.
+You could also use the `random` function to randomly pick a method on every page request.
 
 = How can I add my own method? =
 
 You can choose your own name for the new encode function, f.e. func_name(). The function should have 3 arguments: $email, $display and $encode_display.
-The argument $encode_display (boolean) means if the given $display should be encoded as well. In most cases you can use:
-`if ( $encode_display )
-		$display = Lim_Email_Encoder::get_htmlent( $display );`
+The 3th argument $encode_display (boolean) tells you if the function also needs to encode $display. In most cases you can just use this code for encoding the display:
+`if ( $encode_display ) {`
+`	$display = Lim_Email_Encoder::get_htmlent( $display );`
+`}`
 
 Create a PHP file in the directory /methods, which contains the encode function. Give the file the same name as the function, e.g. `func_name.php`.
 Now your function will be loaded automatically.
