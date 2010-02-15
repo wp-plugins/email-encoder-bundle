@@ -1,4 +1,4 @@
-(function( $ ){ // encapsulate code
+(function( $ ){
 
 $( document ).ready(function(){
 
@@ -21,4 +21,4 @@ $( document ).ready(function(){
 
 });
 
-})( jQuery ); // end encapsulation
+})( jQuery );
