@@ -3,7 +3,7 @@ Contributors: freelancephp
 Donate link: http://www.freelancephp.net/email-encoder/
 Tags: email, email address, mailto, encoder, encode, spam, protection, antispam, spambots, spamming
 Requires at least: 2.8.0
-Tested up to: 2.9.1
+Tested up to: 2.9.2
 Stable tag: 0.11
 
 Encoding email adresses to protect them from spambots and being used for spamming.
