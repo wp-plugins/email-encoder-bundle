@@ -4,7 +4,7 @@ Donate link: http://www.freelancephp.net/email-encoder/
 Tags: email, email address, mailto, encoder, encode, spam, protection, antispam, spambots, spamming
 Requires at least: 2.8.0
 Tested up to: 2.9.2
-Stable tag: 0.11
+Stable tag: 0.12
 
 Encoding email adresses to protect them from spambots and being used for spamming.
 
@@ -55,6 +55,9 @@ Now your function will be loaded automatically.
 1. Admin option page
 
 == Changelog ==
+
+= 0.12 =
+* Nothing changed, but 0.11 had some errors because /methods directory was missing in the repository.
 
 = 0.11 =
 * also possible to use encode tag in widgets (activate "filter widget" option)
