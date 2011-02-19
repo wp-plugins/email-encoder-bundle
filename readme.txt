@@ -1,66 +1,75 @@
 === Email Encoder Bundle ===
 Contributors: freelancephp
-Donate link: http://www.freelancephp.net/email-encoder/
 Tags: email, email address, mailto, encoder, encode, spam, protection, antispam, spambots, spamming
 Requires at least: 2.8.0
-Tested up to: 2.9.2
-Stable tag: 0.12
+Tested up to: 3.0.5
+Stable tag: 0.2
 
-Encoding email adresses to protect them from spambots and being used for spamming.
+Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
 == Description ==
 
-Encoding email adresses to protect them from spambots and being used for spamming.
+Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
-* Encodes email adresses (plain text and mailto links)
-* Choose the preferred method (or on every request randomly pick one of the methods)
-* Easy to use.
+Features:
+* Encoding all emails: plain text, mailto links and the tags like `[encode_email email="..." display="..."]`
+* Scanning posts, widgets and comments
+* Immediatly ready after install
+* Choose one of the high-quality encoding methods
+* Supports querystrings like 'info@myemail.com?subject=Plugin'
+* Tag available `[encode_email email="info@myemail.com" display="My Email"]`
+* Template functions available `<?php echo encode_email( 'info@myemail.com', 'My Email' ); ?>`
+* Supports PHP4.3+ and up to latest WP version
 
 Extra:
-* Put an email encoder form on your own site.
-* Add your own methods.
+* Put a Email Encoder Form on your site
+* Developers can add their own methods
+
+[Authors plugin page](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/)
 
 == Installation ==
 
-1. Upload `wp-email-encoder-bundle.zip` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `[encode_email email="youremail@domain.com" display="Mail me"]` in a post
-1. OR place `<?php encode_emal( 'youremail@domain.com', 'Mail me' ); ?>` in your templates
+1. Upload `wp-email-encoder-bundle.zip` to the `/wp-content/plugins/` directory or add the plugin with 'Add Plugins' in the admin menu
+1. Be sure the plugin is activated in the Plugins-list
 
-If you want to put an email encoder form on your site. Activate this on the admin option page and put this code in your post: `[email_encoder_form]`
+= How to use =
+
+Tags:
+* `[encode_email email="..." display="..."]` Encode the given email, "display" is optional otherwise the email wil be used as display
+* `[email_encoder_form]` Puts an encoder form in your post (check if the option is activated on this page)
+
+Template functions:
+* `<?php echo encode_email( 'info@myemail.com', 'My Email' ); ?>` Encode the given email, the second param is display and optional
+* `<?php echo encode_email_filter( $content ); ?>` Filter the given content for emails to encode
 
 == Frequently Asked Questions ==
 
-= Which method should I use? =
+= Which encoding method should I use? =
 
 The `wp_antispambot` method uses the built-in function of WordPress and does not use any javascript.
-Although JavaScript methods (like email_escape) are probably better protection agains spambots.
-You could also use the `random` function to randomly pick a method on every page request.
+Although JavaScript methods (like email_escape) are probably better protection against spambots.
 
-= How can I add my own method? =
-
-You can choose your own name for the new encode function, f.e. func_name(). The function should have 3 arguments: $email, $display and $encode_display.
-The 3th argument $encode_display (boolean) tells you if the function also needs to encode $display. In most cases you can just use this code for encoding the display:
-`if ( $encode_display ) {`
-`	$display = Lim_Email_Encoder::get_htmlent( $display );`
-`}`
-
-Create a PHP file in the directory /methods, which contains the encode function. Give the file the same name as the function, e.g. `func_name.php`.
-Now your function will be loaded automatically.
-
-[Do you have another question? Please ask me](http://www.freelancephp.net/email-encoder/)
+[Do you have another question? Please ask me](http://www.freelancephp.net/contact/)
 
 == Screenshots ==
 
-1. Admin option page
+1. Admin Settings Page
 
 == Changelog ==
+
+= 0.2 =
+* Implemented internalization (including translation for nl_NL)
+* Improved user-interface of the Admin Settings Page and the Encoder Form
+* Added template function: encode_email_filter()
+* Kept and added only high-quality encoding methods
+* Refactored the code and changed method and var names within the classes
+* Fixed bugs occured using anti_email_spam() and hide_email() method
 
 = 0.12 =
 * Nothing changed, but 0.11 had some errors because /methods directory was missing in the repository.
 
 = 0.11 =
-* also possible to use encode tag in widgets (activate "filter widget" option)
+* also possible to use encode tag in widgets by activating the "filter widget" option
 
 = 0.1 =
 * Works with PHP4 and PHP5
@@ -68,13 +77,14 @@ Now your function will be loaded automatically.
 * Use the tags: `[email_encode email=".." display=".."]`, `[email_encoder_form]`
 * Template function: `email_encode()`
 
-== Credits ==
+== Other Notes ==
 
-Credit goes to:
+= TODO =
+I've got some nice ideas for the next version(s).
+If you have a suggestion please [contact me](http://www.freelancephp.net/contact/)
 
-* [John Godley](http://urbangiraffe.com) for the encode method anti_email_spam() which is taken from his plugin [Anti-email Spam](http://urbangiraffe.com/plugins/anti-email-spam/)
-* [Maurits van der Schee](http://www.maurits.vdschee.nl) for the encode method hide_email()
-* [Adam Hunter](http://blueberryware.net) for the encode method email_escape() which is taken from his plugin [Email Spam Protection](http://blueberryware.net/2008/09/14/email-spam-protection/)
+= Credits =
+* [John Godley](http://urbangiraffe.com) for the encode method 'JavaScript Email Splitter' which is taken from his plugin [Anti-email Spam](http://urbangiraffe.com/plugins/anti-email-spam/)
+* [Adam Hunter](http://blueberryware.net) for the encode method 'JavaScript Escape' which is taken from his plugin [Email Spam Protection](http://blueberryware.net/2008/09/14/email-spam-protection/)
 * [Faycal Tirich](http://faycaltirich.blogspot.com) for using the regular expression from his plugin [WP Emails Encoder](http://faycaltirich.blogspot.com/1979/01/fay-emails-encoder-plugin.html)
-
-== Upgrade Notice ==
+* [Tyler Akins](http://rumkin.com) for the encode method 'JavaScript ASCII Mixer'
