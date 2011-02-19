@@ -52,7 +52,7 @@ class Lim_Email_Encoder {
 			$this->method = array_rand( $this->methods );
 		} else if ( ! key_exists( $method, $this->methods ) ) {
 			// set default method
-			$this->method = 'html_encode';
+			$this->method = 'lim_email_html_encode';
 		} else {
 			$this->method = $method;
 		}
