@@ -1,6 +1,6 @@
 === Email Encoder Bundle ===
 Contributors: freelancephp
-Tags: email, email address, mailto, encoder, encode, spam, protection, antispam, spambots, spamming
+Tags: email, hide email, mailto, spam, protection, spambots, encoder, encrypt, encode, obfuscate, antispam, spamming
 Requires at least: 2.8.0
 Tested up to: 3.0.5
 Stable tag: 0.2
@@ -11,7 +11,7 @@ Protect email addresses on your site from spambots and being used for spamming. 
 
 Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
-Features:
+= Features =
 * Encoding all emails: plain text, mailto links and the tags like `[encode_email email="..." display="..."]`
 * Scanning posts, widgets and comments
 * Immediatly ready after install
@@ -21,7 +21,7 @@ Features:
 * Template functions available `<?php echo encode_email( 'info@myemail.com', 'My Email' ); ?>`
 * Supports PHP4.3+ and up to latest WP version
 
-Extra:
+= Extra =
 * Put a Email Encoder Form on your site
 * Developers can add their own methods
 
@@ -32,13 +32,11 @@ Extra:
 1. Upload `wp-email-encoder-bundle.zip` to the `/wp-content/plugins/` directory or add the plugin with 'Add Plugins' in the admin menu
 1. Be sure the plugin is activated in the Plugins-list
 
-= How to use =
-
-Tags:
+= Tags =
 * `[encode_email email="..." display="..."]` Encode the given email, "display" is optional otherwise the email wil be used as display
 * `[email_encoder_form]` Puts an encoder form in your post (check if the option is activated on this page)
 
-Template functions:
+= Template functions =
 * `<?php echo encode_email( 'info@myemail.com', 'My Email' ); ?>` Encode the given email, the second param is display and optional
 * `<?php echo encode_email_filter( $content ); ?>` Filter the given content for emails to encode
 
@@ -46,8 +44,8 @@ Template functions:
 
 = Which encoding method should I use? =
 
-The `wp_antispambot` method uses the built-in function of WordPress and does not use any javascript.
-Although JavaScript methods (like email_escape) are probably better protection against spambots.
+The `Html Encode` method uses the built-in function of WordPress and does not use any javascript.
+Although JavaScript methods (like `JavaScript ASCII`) are probably better protection against spambots.
 
 [Do you have another question? Please ask me](http://www.freelancephp.net/contact/)
 
@@ -84,7 +82,6 @@ I've got some nice ideas for the next version(s).
 If you have a suggestion please [contact me](http://www.freelancephp.net/contact/)
 
 = Credits =
-* [John Godley](http://urbangiraffe.com) for the encode method 'JavaScript Email Splitter' which is taken from his plugin [Anti-email Spam](http://urbangiraffe.com/plugins/anti-email-spam/)
 * [Adam Hunter](http://blueberryware.net) for the encode method 'JavaScript Escape' which is taken from his plugin [Email Spam Protection](http://blueberryware.net/2008/09/14/email-spam-protection/)
 * [Faycal Tirich](http://faycaltirich.blogspot.com) for using the regular expression from his plugin [WP Emails Encoder](http://faycaltirich.blogspot.com/1979/01/fay-emails-encoder-plugin.html)
 * [Tyler Akins](http://rumkin.com) for the encode method 'JavaScript ASCII Mixer'
