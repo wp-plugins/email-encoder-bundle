@@ -65,19 +65,6 @@ $(function(){
 		$wrap.find( '#ajax_encode' ).click(function(){
 			getEncoded();
 		});
-
-		// set info text for selected encoding method
-		$wrap.find( '.method-info-select' ).bind( 'change blur keyup', function(){
-				var method = $( this ).val(),
-					$desc = $( this ).parent().find( 'span.description' );
-
-				if ( methodInfo && methodInfo[ method ] ) {
-					$desc.html( methodInfo[ method ][ 'description' ] || '' );
-				} else {
-					$desc.html( '' );
-				}
-			})
-			.blur();
 	}());
 
 	/**
@@ -90,6 +77,19 @@ $(function(){
 
 		// prevent toggle when dragging
 		var toggle = true;
+
+		// set info text for selected encoding method
+		$( '.method-info-select' ).bind( 'change blur keyup', function(){
+				var method = $( this ).val(),
+					$desc = $( this ).parent().find( 'span.description' );
+
+				if ( methodInfo && methodInfo[ method ] ) {
+					$desc.html( methodInfo[ method ][ 'description' ] || '' );
+				} else {
+					$desc.html( '' );
+				}
+			})
+			.blur();
 
 		// set sortable boxes
 		$( '.meta-box-sortables' ).sortable({
