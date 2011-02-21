@@ -1,0 +1,152 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Victor Villaverde Laan <info@freelancephp.net>\n"
+"Language-Team:  <info@freelancephp.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ------------------
+# -- Settings --
+# ------------------
+msgid "Choose encoding method"
+msgstr "Kies encodeer methode"
+
+msgid "Encode tags"
+msgstr "Encodeer tags"
+
+msgid "Encode <code>[encode_email]</code> tags"
+msgstr "Encodeer <code>[encode_email]</code> tags"
+
+msgid "Encode mailto-links"
+msgstr "Encodeer mailto-links"
+
+msgid "Automatically encode all mailto-links"
+msgstr "Mailto links automatisch encoderen"
+
+msgid "Encode plain emails"
+msgstr "Encodeer gewone emails"
+
+msgid "Replace plain emailaddresses to encoded mailto-links"
+msgstr "Emailadressen automatisch vervangen door ge-encodeerde mailto links"
+
+msgid "Include comments"
+msgstr "Inclusief reacties"
+
+msgid "Also filter all comments for encoding"
+msgstr "Ook reacties filteren om te encoderen"
+
+msgid "Include widgets"
+msgstr "Inclusief widgets"
+
+msgid "Also filter widgets for encoding"
+msgstr "Ook de widgets filteren om te encoderen"
+
+# ---------------------------
+# -- Settings Encoder Form --
+# ---------------------------
+msgid "Email Encoder Form"
+msgstr "Email Encodeer Formulier"
+
+msgid "Settings Email Encoder Form"
+msgstr "Instellingen Email Encodeer Formulier"
+
+msgid "Put form on your site"
+msgstr "Plaats formulier op je site"
+
+msgid "Put the Email Encode Form (like above) on your site by using this tag in a post or page"
+msgstr "Plaats de Email Encodeer Formulier (zoals hierboven) op je site m.b.v de volgende tag"
+
+msgid "turn off for when not used"
+msgstr "uitzettten als deze functie niet wordt gebruikt"
+
+msgid "Show \"powered by\"-link"
+msgstr "Toon \"powered by\"-link"
+
+msgid "Show the \"powered by\"-link on bottom of the encode form"
+msgstr "Toon de \"powered by\"-link onderaan de Encodeer Formulier"
+
+# ----------------
+# -- How to use --
+# ----------------
+msgid "How to use"
+msgstr "Hoe te gebruiken"
+
+msgid "Tags"
+msgstr ""
+
+msgid "Encode the given email, \"display\" is optional otherwise the email wil be used as display"
+msgstr "Encodeer de opgegeven email, \"display\" is optioneel (anders wordt de email getoond)"
+
+msgid "Puts an encoder form in your post (check if the option is activated on this page)"
+msgstr "Zet een encoder formulier in je berichten (zorg ervoor dat de optie aan staat op deze pagina)"
+
+msgid "Template functions"
+msgstr "Template functies"
+
+msgid "Encode the given email, the second param is display and optional"
+msgstr "Encodeer de opgegeven email, de tweede parameter is de tekst die wordt getoond en is optioneel"
+
+msgid "Filter the given content for emails to encode"
+msgstr "Filter de content op emails om te encoderen"
+
+# -----------------------
+# -- About this plugin --
+# -----------------------
+msgid "About this plugin"
+msgstr "Over deze plugin"
+
+msgid "Description"
+msgstr "Beschrijving"
+
+msgid "Installation"
+msgstr "Installatie"
+
+msgid "FAQ"
+msgstr ""
+
+msgid "Screenshot"
+msgstr ""
+
+msgid "Other Notes"
+msgstr "Andere notities"
+
+msgid "Changelog"
+msgstr ""
+
+msgid "Stats"
+msgstr "Statistieken"
+
+# ------------------
+# -- Encoder Form --
+# ------------------
+msgid "Email address"
+msgstr "Emailadres"
+
+msgid "Display"
+msgstr "Toon op het scherm"
+
+msgid "Encode method"
+msgstr "Encodeer methode"
+
+msgid "Encode"
+msgstr "Encodeer"
+
+msgid "Example"
+msgstr "Voorbeeld"
+
+msgid "Code"
+msgstr ""
+
+msgid "Powered by"
+msgstr ""
+
+# --------------------
+# -- Encode Methods --
+# --------------------
+msgid "Random"
+msgstr "Willekeurig"
+
