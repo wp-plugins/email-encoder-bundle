@@ -3,7 +3,7 @@ Contributors: freelancephp
 Tags: email, hide email, mailto, spam, protection, spambots, encoder, encrypt, encode, obfuscate, antispam, spamming
 Requires at least: 2.8.0
 Tested up to: 3.0.5
-Stable tag: 0.2
+Stable tag: 0.2.1
 
 Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
@@ -14,15 +14,15 @@ Protect email addresses on your site from spambots and being used for spamming. 
 = Features =
 * Encoding all emails: plain text, mailto links and the tags like `[encode_email email="..." display="..."]`
 * Scanning posts, widgets and comments
-* Immediatly ready after install
+* Immediatly ready after install and activation
 * Choose one of the high-quality encoding methods
 * Supports querystrings like 'info@myemail.com?subject=Plugin'
 * Tag available `[encode_email email="info@myemail.com" display="My Email"]`
-* Template functions available `<?php echo encode_email( 'info@myemail.com', 'My Email' ); ?>`
+* Template function available `<?php echo encode_email( 'info@myemail.com', 'My Email' ); ?>`
 * Supports PHP4.3+ and up to latest WP version
 
 = Extra =
-* Put a Email Encoder Form on your site
+* Put an Email Encoder Form on your site
 * Developers can add their own methods
 
 [Authors plugin page](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/)
@@ -47,6 +47,20 @@ Protect email addresses on your site from spambots and being used for spamming. 
 The `Html Encode` method uses the built-in function of WordPress and does not use any javascript.
 Although JavaScript methods (like `JavaScript ASCII`) are probably better protection against spambots.
 
+= I want to make some adjustment in one of the encoding methods. What is the best way? =
+
+The best way is to make a copy of that method and make your adjustments in the copy. Give the new method a unique name.
+Now you can keep updating this plugin and keep remaining the changes you have made.
+
+= My self-written method doesn't work after upgrading to v0.2. How to fix this? =
+
+The has been some changes to the structure of the encoding methods.
+The first is the 3rd param `$encode_display` has been removed, because the display should always be encoded.
+Second, the methodnames should contain the prefix `lim_email_`.
+Optionally you can add a name and description to be showed in the admin panel, like:
+`$lim_email_yourmethodname = array( 'name' => 'YourMethodName',	'description' => '....' );`
+
+
 [Do you have another question? Please ask me](http://www.freelancephp.net/contact/)
 
 == Screenshots ==
@@ -55,13 +69,18 @@ Although JavaScript methods (like `JavaScript ASCII`) are probably better protec
 
 == Changelog ==
 
+= 0.2.1 =
+* Changed Encoder Form: HTML markup and JavaScript
+* Made some minor adjustments and fixed little bugs
+
 = 0.2 =
 * Implemented internalization (including translation for nl_NL)
 * Improved user-interface of the Admin Settings Page and the Encoder Form
 * Added template function: encode_email_filter()
 * Kept and added only high-quality encoding methods
-* Refactored the code and changed method and var names within the classes
-* Fixed bugs occured using anti_email_spam() and hide_email() method
+* Refactored the code and changed method- and var-names within the classes
+* Removed 3rd param $encode_display out of the encoding methods, display should always be encoded
+* Added prefix 'lim_email_' to the encoding methods
 
 = 0.12 =
 * Nothing changed, but 0.11 had some errors because /methods directory was missing in the repository.

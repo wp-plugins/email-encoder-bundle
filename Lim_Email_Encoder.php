@@ -6,7 +6,7 @@
  *
  * @package  Lim_Email_Encoder
  * @author   Victor Villaverde Laan
- * @version  0.2
+ * @version  0.2.1
  * @link     http://www.freelancephp.net/email-encoder-php-class/
  * @license  MIT license
  */
@@ -50,11 +50,12 @@ class Lim_Email_Encoder {
 		if ( 'random' == $method ) {
 			// set a random method
 			$this->method = array_rand( $this->methods );
-		} else if ( ! key_exists( $method, $this->methods ) ) {
+		} elseif ( ! key_exists( $method, $this->methods ) ) {
 			// set default method
 			$this->method = 'lim_email_html_encode';
 		} else {
-			$this->method = $method;
+			// add 'lim_email_' prefix if not already set
+			$this->method = ( strpos( $method, 'lim_email_' ) !== FALSE ) ? $method : 'lim_email_' . $method;
 		}
 
 		return $this;
@@ -166,13 +167,14 @@ class Lim_Email_Encoder {
 			if ( '.php' == substr( $file, -4 ) ) {
 				require_once $method_dir . '/' . $file;
 
-				$fn = 'lim_email_' . substr( $file, 0, -4 );
+				$name = substr( $file, 0, -4 );
+				$fn = 'lim_email_' . $name;
 
 				if ( function_exists( $fn ) ) {
 					// set method with info
 					$this->methods[$fn] = ( isset( ${ $fn } ) ) 
 										? ${ $fn }
-										: array( 'name' => NULL, 'description' => NULL );
+										: array( 'name' => $name, 'description' => $name );
 				}
 			}
 		}

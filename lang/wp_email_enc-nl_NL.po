@@ -18,47 +18,47 @@ msgstr "Kies encodeer methode"
 msgid "Encode tags"
 msgstr "Encodeer tags"
 
-msgid "Encode all tags like"
-msgstr "Encodeer alle tags, zoals"
+msgid "Encode <code>[encode_email]</code> tags"
+msgstr "Encodeer <code>[encode_email]</code> tags"
 
-msgid "Encode mailto links"
-msgstr "Encodeer mailto links"
+msgid "Encode mailto-links"
+msgstr "Encodeer mailto-links"
 
-msgid "Also encode mailto links"
-msgstr "Ook de mailto links encoderen"
+msgid "Automatically encode all mailto-links"
+msgstr "Mailto links automatisch encoderen"
 
 msgid "Encode plain emails"
 msgstr "Encodeer gewone emails"
 
-msgid "Replacing plain text emails to an encoded mailto link"
-msgstr "Emails vervangen door ge-encodeerde mailto links"
+msgid "Replace plain emailaddresses to encoded mailto-links"
+msgstr "Emailadressen automatisch vervangen door ge-encodeerde mailto links"
 
 msgid "Include comments"
 msgstr "Inclusief reacties"
 
 msgid "Also filter all comments for encoding"
-msgstr "Ook de reacties doorlopen"
+msgstr "Ook reacties filteren om te encoderen"
 
 msgid "Include widgets"
 msgstr "Inclusief widgets"
 
 msgid "Also filter widgets for encoding"
-msgstr "Ook de widgets doorlopen"
+msgstr "Ook de widgets filteren om te encoderen"
 
 # ---------------------------
 # -- Settings Encoder Form --
 # ---------------------------
-msgid "Encoder Form"
-msgstr "Encodeer Formulier"
+msgid "Email Encoder Form"
+msgstr "Email Encodeer Formulier"
 
-msgid "Settings Encoder Form"
-msgstr "Instellingen Encodeer Formulier"
+msgid "Settings Email Encoder Form"
+msgstr "Instellingen Email Encodeer Formulier"
 
-msgid "Encode form on your site"
-msgstr "Encodeer Formulier op je site"
+msgid "Put form on your site"
+msgstr "Plaats formulier op je site"
 
-msgid "Put an encode form (like above) on your site by using this tag in a post or page"
-msgstr "Plaats een Encodeer Formulier (zoals hierboven) op je site m.b.v de volgende tag"
+msgid "Put the Email Encode Form (like above) on your site by using this tag in a post or page"
+msgstr "Plaats de Email Encodeer Formulier (zoals hierboven) op je site m.b.v de volgende tag"
 
 msgid "turn off for when not used"
 msgstr "uitzettten als deze functie niet wordt gebruikt"
@@ -123,11 +123,11 @@ msgstr "Statistieken"
 # ------------------
 # -- Encoder Form --
 # ------------------
-msgid "Email"
-msgstr ""
+msgid "Email address"
+msgstr "Emailadres"
 
-msgid "Display (optional)"
-msgstr "Tonen"
+msgid "Display"
+msgstr "Toon op het scherm"
 
 msgid "Encode method"
 msgstr "Encodeer methode"
@@ -135,8 +135,8 @@ msgstr "Encodeer methode"
 msgid "Encode"
 msgstr "Encodeer"
 
-msgid "Link"
-msgstr ""
+msgid "Example"
+msgstr "Voorbeeld"
 
 msgid "Code"
 msgstr ""

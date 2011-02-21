@@ -4,7 +4,7 @@ Plugin Name: Email Encoder Bundle
 Plugin URI: http://www.freelancephp.net/email-encoder-php-class-wp-plugin/
 Description: Protecting email-spamming by replacing them with one of the registered encoding-methods
 Author: Victor Villaverde Laan
-Version: 0.2
+Version: 0.2.1
 Author URI: http://www.freelancephp.net
 License: Dual licensed under the MIT and GPL licenses
 */
@@ -166,15 +166,15 @@ class WP_Email_Encoder extends Lim_Email_Encoder {
 						</tr>
 						<tr>
 							<th><label for="<?php echo $this->domain ?>options[encode_tags]"><?php _e( 'Encode tags', $this->domain ) ?></label></th>
-							<td><input type="checkbox" id="<?php echo $this->domain ?>options[encode_tags]" name="<?php echo $this->domain ?>options[encode_tags]" value="1" <?php checked('1', (int) $options['encode_tags']); ?> /> <span class="description"><?php _e( 'Encode all tags like', $this->domain ) ?></span> <code>[encode_email email="info@myemail.com" display="My Email"]</code></td>
+							<td><input type="checkbox" id="<?php echo $this->domain ?>options[encode_tags]" name="<?php echo $this->domain ?>options[encode_tags]" value="1" <?php checked('1', (int) $options['encode_tags']); ?> /> <span class="description"><?php _e( 'Encode <code>[encode_email]</code> tags', $this->domain ) ?></span></td>
 						</tr>
 						<tr>
-							<th><label for="<?php echo $this->domain ?>options[encode_mailtos]"><?php _e( 'Encode mailto links', $this->domain ) ?></label></th>
-							<td><input type="checkbox" id="<?php echo $this->domain ?>options[encode_mailtos]" name="<?php echo $this->domain ?>options[encode_mailtos]" value="1" <?php checked('1', (int) $options['encode_mailtos']); ?> /> <span class="description"><?php _e( 'Also encode mailto links', $this->domain ) ?></span></td>
+							<th><label for="<?php echo $this->domain ?>options[encode_mailtos]"><?php _e( 'Encode mailto-links', $this->domain ) ?></label></th>
+							<td><input type="checkbox" id="<?php echo $this->domain ?>options[encode_mailtos]" name="<?php echo $this->domain ?>options[encode_mailtos]" value="1" <?php checked('1', (int) $options['encode_mailtos']); ?> /> <span class="description"><?php _e( 'Automatically encode all mailto-links', $this->domain ) ?></span></td>
 						</tr>
 						<tr>
 							<th><label for="<?php echo $this->domain ?>options[encode_emails]"><?php _e( 'Encode plain emails', $this->domain ) ?></label></th>
-							<td><input type="checkbox" id="<?php echo $this->domain ?>options[encode_emails]" name="<?php echo $this->domain ?>options[encode_emails]" value="1" <?php checked('1', (int) $options['encode_emails']); ?> /> <span class="description"><?php _e( 'Replacing plain text emails to an encoded mailto link', $this->domain ) ?></span></td>
+							<td><input type="checkbox" id="<?php echo $this->domain ?>options[encode_emails]" name="<?php echo $this->domain ?>options[encode_emails]" value="1" <?php checked('1', (int) $options['encode_emails']); ?> /> <span class="description"><?php _e( 'Replace plain emailaddresses to encoded mailto-links', $this->domain ) ?></span></td>
 						</tr>
 						<tr>
 							<th style="padding-top:25px"><label for="<?php echo $this->domain ?>options[filter_comments]"><?php _e( 'Include comments', $this->domain ) ?></label></th>
@@ -194,7 +194,7 @@ class WP_Email_Encoder extends Lim_Email_Encoder {
 
 			<div class="postbox">
 				<div class="handlediv" title="<?php _e( 'Click to toggle' ) ?>"><br/></div>
-				<h3 class="hndle"><?php _e( 'Encoder Form', $this->domain ) ?></h3>
+				<h3 class="hndle"><?php _e( 'Email Encoder Form', $this->domain ) ?></h3>
 				<div class="inside">
 					<?php echo $this->get_encoder_form(); ?>
 				</div>
@@ -202,13 +202,13 @@ class WP_Email_Encoder extends Lim_Email_Encoder {
 
 			<div class="postbox">
 				<div class="handlediv" title="<?php _e( 'Click to toggle' ) ?>"><br/></div>
-				<h3 class="hndle"><?php _e( 'Settings Encoder Form', $this->domain ) ?></h3>
+				<h3 class="hndle"><?php _e( 'Settings Email Encoder Form', $this->domain ) ?></h3>
 				<div class="inside">
 					<fieldset class="options">
 						<table class="form-table">
 						<tr>
-							<th><label for="<?php echo $this->domain ?>options[form_on_site]"><?php _e( 'Encode form on your site', $this->domain ) ?></label></th>
-							<td><input type="checkbox" id="<?php echo $this->domain ?>options[form_on_site]" name="<?php echo $this->domain ?>options[form_on_site]" value="1" <?php checked('1', (int) $options['form_on_site']); ?> /> <span class="description"><?php _e( 'Put an encode form (like above) on your site by using this tag in a post or page', $this->domain ) ?></span> <code>[email_encoder_form]</code><span class="description"> (<?php _e( 'turn off for when not used', $this->domain ) ?>)</span></td>
+							<th><label for="<?php echo $this->domain ?>options[form_on_site]"><?php _e( 'Put form on your site', $this->domain ) ?></label></th>
+							<td><input type="checkbox" id="<?php echo $this->domain ?>options[form_on_site]" name="<?php echo $this->domain ?>options[form_on_site]" value="1" <?php checked('1', (int) $options['form_on_site']); ?> /> <span class="description"><?php _e( 'Put the Email Encode Form (like above) on your site by using this tag in a post or page', $this->domain ) ?></span> <code>[email_encoder_form]</code><span class="description"> (<?php _e( 'turn off for when not used', $this->domain ) ?>)</span></td>
 						</tr>
 						<tr>
 							<th><label for="<?php echo $this->domain ?>options[powered_by]"><?php _e( 'Show "powered by"-link', $this->domain ) ?></label></th>
@@ -231,7 +231,7 @@ class WP_Email_Encoder extends Lim_Email_Encoder {
 					<h4><?php _e( 'Tags', $this->domain ) ?></h4>
 					<ul>
 						<li><code>[encode_email email="..." display="..."]</code><br/><span class="description"><?php _e( 'Encode the given email, "display" is optional otherwise the email wil be used as display', $this->domain ) ?></span></li>
-						<li><code>[email_encoder_form]</code><br/><span class="description"><?php _e( 'Puts an encoder form in your post (check if the option is activated on this page)', $this->domain ) ?></span></li>
+						<li><code>[email_encoder_form]</code><br/><span class="description"><?php _e( 'Puts an email encoder form in your post (check if the option is activated on this page)', $this->domain ) ?></span></li>
 					</ul>
 					<h4><?php _e( 'Template functions' ) ?></h4>
 					<ul>
@@ -276,49 +276,54 @@ class WP_Email_Encoder extends Lim_Email_Encoder {
 	function get_encoder_form() {
 		ob_start();
 ?>
-			<form class="email-encoder-form">
+	<div class="email-encoder-form">
+		<form>
 			<fieldset>
-				<table class="form-table">
-				<tr>
+				<div class="input">
+					<table>
 					<tr>
-						<th><label for="email"><?php _e( 'Email', $this->domain ) ?></label></th>
-						<td><input type="text" class="regular-text" id="email" name="email" /></td>
+						<tr>
+							<th><label for="email"><?php _e( 'Email address', $this->domain ) ?></label></th>
+							<td><input type="text" class="regular-text" id="email" name="email" /></td>
+						</tr>
+						<tr>
+							<th><label for="display"><?php _e( 'Display', $this->domain ) ?></label></th>
+							<td><input type="text" class="regular-text" id="display" name="display" /></td>
+						</tr>
+						<tr>
+							<th><?php _e( 'Example', $this->domain ) ?></th>
+							<td><span id="example"></span></td>
+						</tr>
+						<tr>
+							<th><label for="encode_method"><?php _e( 'Encode method', $this->domain ) ?></label></th>
+							<td><select id="encode_method" name="encode_method" class="postform">
+								<?php foreach ( $this->methods AS $method => $info ): ?>
+									<option value="<?php echo $method ?>" <?php if ( $this->method == $method ) echo 'selected="selected"' ?>><?php echo $info[ 'name' ] ?></option>
+								<?php endforeach; ?>
+									<option value="random" <?php if ( $this->method == 'random' ) echo 'selected="selected"' ?>><?php _e( 'Random', $this->domain ) ?></option>
+								</select>
+								<input type="button" id="ajax_encode" value="<?php _e( 'Encode', $this->domain ) ?> &gt;&gt;" />
+							</td>
+						</tr>
 					</tr>
+					</table>
+				</div>
+				<div class="output nodis">
+					<table>
 					<tr>
-						<th><label for="display"><?php _e( 'Display (optional)', $this->domain ) ?></label></th>
-						<td><input type="text" class="regular-text" id="display" name="display" /></td>
+						<tr>
+							<th><label for="encoded_output"><?php _e( 'Code', $this->domain ) ?></label></th>
+							<td><textarea class="large-text node" id="encoded_output" name="encoded_output"></textarea></td>
+						</tr>
 					</tr>
-					<tr>
-						<th><label for="encode_method"><?php _e( 'Encode method', $this->domain ) ?></label></th>
-						<td><select id="encode_method" name="encode_method" class="postform">
-							<?php foreach ( $this->methods AS $method => $info ): ?>
-								<option value="<?php echo $method ?>" <?php if ( $this->method == $method ) echo 'selected="selected"' ?>><?php echo $info[ 'name' ] ?></option>
-							<?php endforeach; ?>
-								<option value="random" <?php if ( $this->method == 'random' ) echo 'selected="selected"' ?>><?php _e( 'Random', $this->domain ) ?></option>
-							</select>
-							<input type="button" id="ajax_encode" value="<?php _e( 'Encode', $this->domain ) ?> &gt;&gt;" />
-						</td>
-					</tr>
-				</tr>
-				</table>
-				<hr />
-				<table class="form-table">
-				<tr>
-					<tr>
-						<th><?php _e( 'Link', $this->domain ) ?></th>
-						<td><span id="example"></span></td>
-					</tr>
-					<tr>
-						<th><label for="encoded_output"><?php _e( 'Code', $this->domain ) ?></label></th>
-						<td><textarea class="large-text node" id="encoded_output" name="encoded_output"></textarea></td>
-					</tr>
-				</tr>
-				</table>
+					</table>
+				</div>
 			<?php if ( $this->options['powered_by'] ): ?>
 				<p class="powered-by"><?php _e( 'Powered by', $this->domain ) ?> <a rel="external" href="http://www.freelancephp.net/email-encoder-php-class-wp-plugin/">Email Encoder Bundle</a></p>
 			<?php endif; ?>
 			</fieldset>
-			</form>
+		</form>
+	</div>
 <?php
 		$form = ob_get_contents();
 		ob_clean();
