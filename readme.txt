@@ -3,7 +3,7 @@ Contributors: freelancephp
 Tags: email, hide email, mailto, spam, protection, spambots, encoder, encrypt, encode, obfuscate, antispam, spamming
 Requires at least: 2.8.0
 Tested up to: 3.0.5
-Stable tag: 0.2.1
+Stable tag: 0.21
 
 Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
@@ -69,11 +69,11 @@ Optionally you can add a name and description to be showed in the admin panel, l
 
 == Changelog ==
 
-= 0.2.1 =
+= 0.21 =
 * Changed Encoder Form: HTML markup and JavaScript
 * Made some minor adjustments and fixed little bugs
 
-= 0.2 =
+= 0.20 =
 * Implemented internalization (including translation for nl_NL)
 * Improved user-interface of the Admin Settings Page and the Encoder Form
 * Added template function: encode_email_filter()
@@ -88,7 +88,7 @@ Optionally you can add a name and description to be showed in the admin panel, l
 = 0.11 =
 * also possible to use encode tag in widgets by activating the "filter widget" option
 
-= 0.1 =
+= 0.10 =
 * Works with PHP4 and PHP5
 * Methods: default_encode, wp_antispambot, anti_email_spam, email_escape, hide_email
 * Use the tags: `[email_encode email=".." display=".."]`, `[email_encoder_form]`
@@ -104,3 +104,7 @@ If you have a suggestion please [contact me](http://www.freelancephp.net/contact
 * [Adam Hunter](http://blueberryware.net) for the encode method 'JavaScript Escape' which is taken from his plugin [Email Spam Protection](http://blueberryware.net/2008/09/14/email-spam-protection/)
 * [Faycal Tirich](http://faycaltirich.blogspot.com) for using the regular expression from his plugin [WP Emails Encoder](http://faycaltirich.blogspot.com/1979/01/fay-emails-encoder-plugin.html)
 * [Tyler Akins](http://rumkin.com) for the encode method 'JavaScript ASCII Mixer'
+
+== Upgrade Notice ==
+
+Be carefull when upgrading from version 0.12 or less. The structure of the code has been changed. If you have written your own encoding method you should make some minor adjustments (see FAQ).

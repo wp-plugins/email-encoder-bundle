@@ -4,7 +4,7 @@ Plugin Name: Email Encoder Bundle
 Plugin URI: http://www.freelancephp.net/email-encoder-php-class-wp-plugin/
 Description: Protecting email-spamming by replacing them with one of the registered encoding-methods
 Author: Victor Villaverde Laan
-Version: 0.2.1
+Version: 0.21
 Author URI: http://www.freelancephp.net
 License: Dual licensed under the MIT and GPL licenses
 */

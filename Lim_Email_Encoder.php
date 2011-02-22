@@ -6,7 +6,7 @@
  *
  * @package  Lim_Email_Encoder
  * @author   Victor Villaverde Laan
- * @version  0.2.1
+ * @version  0.21
  * @link     http://www.freelancephp.net/email-encoder-php-class/
  * @license  MIT license
  */
