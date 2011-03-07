@@ -1,9 +1,9 @@
 === Email Encoder Bundle ===
 Contributors: freelancephp
-Tags: email, hide email, mailto, spam, protection, spambots, encoder, encrypt, encode, obfuscate, antispam, spamming
-Requires at least: 2.8.0
-Tested up to: 3.0.5
-Stable tag: 0.21
+Tags: email, hide, mailto, spam, protection, spambots, encoder, encrypt, encode, obfuscate, antispam, spamming
+Requires at least: 2.7.0
+Tested up to: 3.1
+Stable tag: 0.22
 
 Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
@@ -68,6 +68,10 @@ Optionally you can add a name and description to be showed in the admin panel, l
 1. Admin Settings Page
 
 == Changelog ==
+
+= 0.22 =
+* First decodes entities before encoding email
+* Added more wp filters for encoding
 
 = 0.21 =
 * Changed Encoder Form: HTML markup and JavaScript

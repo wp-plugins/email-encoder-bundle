@@ -6,7 +6,7 @@
  *
  * @package  Lim_Email_Encoder
  * @author   Victor Villaverde Laan
- * @version  0.21
+ * @version  0.22
  * @link     http://www.freelancephp.net/email-encoder-php-class/
  * @license  MIT license
  */
@@ -68,6 +68,11 @@ class Lim_Email_Encoder {
 	 * @return string
 	 */
 	function encode( $email, $display = NULL ) {
+		// decode entities
+		if ( function_exists( 'wp_kses_decode_entities' ) )
+			$email = wp_kses_decode_entities( $email );
+
+		// set email as display
 		if ( $display === NULL )
 			$display = $email;
 

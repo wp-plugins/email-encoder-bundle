@@ -4,7 +4,7 @@ Plugin Name: Email Encoder Bundle
 Plugin URI: http://www.freelancephp.net/email-encoder-php-class-wp-plugin/
 Description: Protecting email-spamming by replacing them with one of the registered encoding-methods
 Author: Victor Villaverde Laan
-Version: 0.21
+Version: 0.22
 Author URI: http://www.freelancephp.net
 License: Dual licensed under the MIT and GPL licenses
 */
@@ -57,15 +57,33 @@ class WP_Email_Encoder extends Lim_Email_Encoder {
 		load_plugin_textdomain( $this->domain, dirname( __FILE__ ) . '/lang/', basename( dirname(__FILE__) ) . '/lang/' );
 
 		// add filters
-		add_filter( 'the_content', array( &$this, '_filter_callback' ), 100 );
+		// set filter priority
+		$priority = 100;
 
-		// also filter comments
-		if ( $this->options['filter_comments'] )
-			add_filter( 'comment_text', array( &$this, '_filter_callback' ), 100 );
+		// content
+		add_filter( 'the_title', array( $this, '_filter_callback' ), $priority );
+		add_filter( 'the_content', array( $this, '_filter_callback' ), $priority );
+		add_filter( 'the_excerpt', array( $this, '_filter_callback' ), $priority );
+		add_filter( 'get_the_excerpt', array( $this, '_filter_callback' ), $priority );
 
-		// also filter widgets
-		if ( $this->options['filter_widgets'] )
-			add_filter( 'widget_text', array( &$this, '_filter_callback' ), 100 );
+		// comments
+		if ( $this->options[ 'filter_comments' ] ) {
+			add_filter( 'comment_text', array( $this, '_filter_callback' ), $priority );
+			add_filter( 'comment_excerpt', array( $this, '_filter_callback' ), $priority );
+			add_filter( 'get_comment_author_url', array( $this, '_filter_callback' ), $priority );
+			add_filter( 'get_comment_author_link', array( $this, '_filter_callback' ), $priority );
+			add_filter( 'get_comment_author_url_link', array( $this, '_filter_callback' ), $priority );
+		}
+
+		// widgets ( only text widgets )
+		if ( $this->options[ 'filter_widgets' ] ) {
+			add_filter( 'widget_title', array( $this, '_filter_callback' ), $priority );
+			add_filter( 'widget_text', array( $this, '_filter_callback' ), $priority );
+
+			// Only if Widget Logic plugin is installed
+			add_filter( 'widget_content', array( $this, '_filter_callback' ), $priority );
+		}
+
 
 		// add actions
 		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
