@@ -112,8 +112,10 @@ Optionally you can add a name and description to be showed in the admin panel, l
 = Credits =
 * [Adam Hunter](http://blueberryware.net) for the encode method 'JavaScript Escape' which is taken from his plugin [Email Spam Protection](http://blueberryware.net/2008/09/14/email-spam-protection/)
 * [Tyler Akins](http://rumkin.com) for the encode method 'JavaScript ASCII Mixer'
+* Title icon on Admin Options Page was made by [Jack Cai](http://www.doublejdesign.co.uk/)
 
 == Upgrade Notice ==
 
+= 0.30 =
 * Some bug fixes
 * New: email protection for RSS feeds
