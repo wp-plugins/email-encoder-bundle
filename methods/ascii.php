@@ -45,14 +45,13 @@ function lim_email_ascii( $email, $display ) {
 	$MailIndexes = str_replace("\\", "\\\\", $MailIndexes);
 	$MailIndexes = str_replace("\"", "\\\"", $MailIndexes);
 
-	return '<script language="javascript"><!--
-ML="'. $MailLettersEnc .'";
-MI="'. $MailIndexes .'";
-OT="";
-for(j=0;j<MI.length;j++){
-OT+=ML.charAt(MI.charCodeAt(j)-48);
-}document.write(OT);
-// --></script>';
+	return '<script language="javascript">/*<![CDATA[*/'
+			. 'ML="'. $MailLettersEnc .'";'
+			. 'MI="'. $MailIndexes .'";'
+			. 'OT="";'
+			. 'for(j=0;j<MI.length;j++){'
+			. 'OT+=ML.charAt(MI.charCodeAt(j)-48);'
+			. '}document.write(OT);/*]]>*/</script><noscript>*protected email*</noscript>';
 }
 
 endif;

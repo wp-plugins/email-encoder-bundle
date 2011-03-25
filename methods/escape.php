@@ -27,7 +27,7 @@ function lim_email_escape( $email, $display ) {
 			$out .= '%' . dechex(ord($c));
 		}
 	}
-	$out .= "'))" . '/*]]>*/</script>';
+	$out .= "'))" . '/*]]>*/</script><noscript>*protected email*</noscript>';
 	return $out;
 }
 

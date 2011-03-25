@@ -3,7 +3,7 @@ Contributors: freelancephp
 Tags: email, hide, mailto, spam, protection, spambots, encoder, encrypt, encode, obfuscate, antispam, spamming
 Requires at least: 2.7.0
 Tested up to: 3.1
-Stable tag: 0.22
+Stable tag: 0.30
 
 Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
@@ -12,25 +12,26 @@ Protect email addresses on your site from spambots and being used for spamming. 
 Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
 = Features =
-* Encoding all emails: plain text, mailto links and the tags like `[encode_email email="..." display="..."]`
-* Scanning posts, widgets and comments
-* Immediatly ready after install and activation
+* Protect plain emails and mailto links
+* Scanning posts, widgets, comments and RSS feeds
 * Choose one of the high-quality encoding methods
 * Supports querystrings like 'info@myemail.com?subject=Plugin'
+
 * Tag available `[encode_email email="info@myemail.com" display="My Email"]`
 * Template function available `<?php echo encode_email( 'info@myemail.com', 'My Email' ); ?>`
-* Supports PHP4.3+ and up to latest WP version
 
 = Extra =
 * Put an Email Encoder Form on your site
 * Developers can add their own methods
 
-[Authors plugin page](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/)
+Supports PHP4.3+ and up to latest WP version.
 
 == Installation ==
 
-1. Upload `wp-email-encoder-bundle.zip` to the `/wp-content/plugins/` directory or add the plugin with 'Add Plugins' in the admin menu
-1. Be sure the plugin is activated in the Plugins-list
+1. Go to `Plugins` in the Admin menu
+1. Click on the button `Add new`
+1. Search for `Email Encode Bundle` and click 'Install Now' or click on the `upload` link to upload `email-encode-bundle.zip`
+1. Click on `Activate plugin`
 
 = Tags =
 * `[encode_email email="..." display="..."]` Encode the given email, "display" is optional otherwise the email wil be used as display
@@ -60,14 +61,22 @@ Second, the methodnames should contain the prefix `lim_email_`.
 Optionally you can add a name and description to be showed in the admin panel, like:
 `$lim_email_yourmethodname = array( 'name' => 'YourMethodName',	'description' => '....' );`
 
-
 [Do you have another question? Please ask me](http://www.freelancephp.net/contact/)
 
 == Screenshots ==
 
-1. Admin Settings Page
+1. Admin Options Page
+1. Email Encoder Form on the Site
 
 == Changelog ==
+
+= 0.30 =
+* Added protection for emails in RSS feeds
+* Improved filtering tags [encode_email ... ]
+* Improved ASCII and Escape method and added noscript message
+* Solved an option bug (encode mailto links VS encode plain emails)
+* Made some cosmetical adjustments on the options page
+* Code refactoring
 
 = 0.22 =
 * First decodes entities before encoding email
@@ -100,15 +109,11 @@ Optionally you can add a name and description to be showed in the admin panel, l
 
 == Other Notes ==
 
-= TODO =
-I've got some nice ideas for the next version(s).
-If you have a suggestion please [contact me](http://www.freelancephp.net/contact/)
-
 = Credits =
 * [Adam Hunter](http://blueberryware.net) for the encode method 'JavaScript Escape' which is taken from his plugin [Email Spam Protection](http://blueberryware.net/2008/09/14/email-spam-protection/)
-* [Faycal Tirich](http://faycaltirich.blogspot.com) for using the regular expression from his plugin [WP Emails Encoder](http://faycaltirich.blogspot.com/1979/01/fay-emails-encoder-plugin.html)
 * [Tyler Akins](http://rumkin.com) for the encode method 'JavaScript ASCII Mixer'
 
 == Upgrade Notice ==
 
-Be carefull when upgrading from version 0.12 or less. The structure of the code has been changed. If you have written your own encoding method you should make some minor adjustments (see FAQ).
+* Some bug fixes
+* New: email protection for RSS feeds

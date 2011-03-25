@@ -69,8 +69,7 @@ class Lim_Email_Encoder {
 	 */
 	function encode( $email, $display = NULL ) {
 		// decode entities
-		if ( function_exists( 'wp_kses_decode_entities' ) )
-			$email = wp_kses_decode_entities( $email );
+		$email = html_entity_decode( $email );
 
 		// set email as display
 		if ( $display === NULL )
@@ -78,38 +77,6 @@ class Lim_Email_Encoder {
 
 		// get encoded email code
 		return call_user_func( $this->method, $email, $display );
-	}
-
-	/**
-	 * Encode all emails of the given content
-	 * @param string $content
-	 * @param boolean $enc_tags Optional, default TRUE
-	 * @param boolean $enc_plain_emails Optional, default TRUE
-	 * @param boolean $enc_mailtos  Optional, default TRUE
-	 * @return string
-	 */
-	function filter( $content, $enc_tags = TRUE, $enc_plain_emails = TRUE, $enc_mailtos = TRUE ) {
-		// encode mailto links
-		if ( $enc_mailtos ) {
-			$mailto_pattern = '/<a.*?href=["\']mailto:(.*?)["\'].*?>(.*?)<\/a>/i';
-			$content = preg_replace_callback( $mailto_pattern, array( $this, '_callback' ), $content );
-		}
-
-		// replace content tags [encode_email email="?" display="?"] to mailto links
-		// this code is partly taken from the plugin "Fay Emails Encoder"
-		// Credits goes to Faycal Tirich (http://faycaltirich.blogspot.com)
-		if ( $enc_tags ) {
-			$tag_pattern = '/\[encode_email\s+email=["\'](.*?)["\']\s+display=["\'](.*?)["\']]/i';
-			$content = preg_replace_callback( $tag_pattern, array( $this, '_callback' ), $content );
-		}
-
-		// replace plain emails
-		if ( $enc_plain_emails ) {
-			$email_pattern = '/([A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6})/i';
-			$content = preg_replace_callback( $email_pattern, array( $this, '_callback' ), $content );
-		}
-
-		return $content;
 	}
 
 	/**
@@ -122,37 +89,26 @@ class Lim_Email_Encoder {
 	 */
 	function get_htmlent( $value ) {
 		// check if antispambot WordPress function exists
-		if ( ! function_exists( 'antispambot' ) )
-			return antispambot( $value );
+		if ( function_exists( 'antispambot' ) ) {
+			$enc_value = antispambot( $value );
+		} else {
+			$enc_value = '';
+			srand( (float) microtime() * 1000000 );
 
-		$enc_value = '';
-		srand( (float) microtime() * 1000000 );
+			for ( $i = 0; $i < strlen( $value ); $i = $i + 1 ) {
+				$j = floor( rand( 0, 1 ) );
 
-		for ( $i = 0; $i < strlen( $value ); $i = $i + 1 ) {
-			$j = floor( rand( 0, 1 ) );
-
-			if ( $j == 0 ) {
-				$enc_value .= '&#' . ord( substr( $value, $i, 1 ) ).';';
-			} elseif ( $j == 1 ) {
-				$enc_value .= substr( $value, $i, 1 );
+				if ( $j == 0 ) {
+					$enc_value .= '&#' . ord( substr( $value, $i, 1 ) ).';';
+				} elseif ( $j == 1 ) {
+					$enc_value .= substr( $value, $i, 1 );
+				}
 			}
 		}
 
 		$enc_value = str_replace( '@', '&#64;', $enc_value );
 
 		return $enc_value;
-	}
-
-	/**
-	 * Callback for encoding email
-	 * @param array $match
-	 * @return string
-	 */
-	function _callback( $match ) {
-		if ( count( $match ) == 2 )
-			return $this->encode( $match[1] );
-
-		return $this->encode( $match[1], $match[2] );
 	}
 
 	/**
