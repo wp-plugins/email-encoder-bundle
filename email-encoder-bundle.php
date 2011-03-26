@@ -347,7 +347,7 @@ jQuery(function( $ ){
 					<ul>
 						<li><a href="http://www.freelancephp.net/contact/" target="_blank"><?php _e( 'Questions or suggestions?', $this->domain ) ?></a></li>
 						<li><?php _e( 'If you like this plugin please send your rating at WordPress.org.' ) ?></li>
-						<li><a href="http://wordpress.org/extend/plugins/email-encoder-php-class-wp-plugin/" target="_blank">WordPress.org</a> | <a href="http://www.freelancephp.net/email-encoder-php-class-wp-plugin/" target="_blank">FreelancePHP.net</a></li>
+						<li><a href="http://wordpress.org/extend/plugins/email-encoder-bundle/" target="_blank">WordPress.org</a> | <a href="http://www.freelancephp.net/email-encoder-php-class-wp-plugin/" target="_blank">FreelancePHP.net</a></li>
 					</ul>
 				</div>
 			</div>
