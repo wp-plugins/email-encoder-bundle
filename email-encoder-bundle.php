@@ -97,7 +97,7 @@ class WP_Email_Encoder_Bundle extends Lim_Email_Encoder {
 			$priority = 100;
 
 			// set content filters
-			add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ), $priotity );
+			add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ), $priority );
 
 			// comments
 			if ( $this->options[ 'filter_comments' ] ) {

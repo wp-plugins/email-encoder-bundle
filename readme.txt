@@ -70,6 +70,9 @@ Optionally you can add a name and description to be showed in the admin panel, l
 
 == Changelog ==
 
+= 0.31 =
+* Fixed tiny bug (incorrect var-name $priority on line 100 of email-encoder-bundle.php)
+
 = 0.30 =
 * Added protection for emails in RSS feeds
 * Improved filtering tags [encode_email ... ]
