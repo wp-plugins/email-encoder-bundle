@@ -4,7 +4,7 @@ Plugin Name: Email Encoder Bundle
 Plugin URI: http://www.freelancephp.net/email-encoder-php-class-wp-plugin/
 Description: Protect email addresses on your site from spambots and being used for spamming by using one of the encoding methods.
 Author: Victor Villaverde Laan
-Version: 0.31
+Version: 0.32
 Author URI: http://www.freelancephp.net
 License: Dual licensed under the MIT and GPL licenses
 */
@@ -22,7 +22,7 @@ class WP_Email_Encoder_Bundle extends Lim_Email_Encoder {
 	 * Current version
 	 * @var string
 	 */
-	var $version = '0.31';
+	var $version = '0.32';
 
 	/**
 	 * Used as prefix for options entry and could be used as text domain (for translations)
@@ -114,7 +114,8 @@ class WP_Email_Encoder_Bundle extends Lim_Email_Encoder {
 				add_filter( 'widget_text', array( $this, '_filter_callback' ), $priority );
 
 				// Only if Widget Logic plugin is installed
-				add_filter( 'widget_content', array( $this, '_filter_callback' ), $priority );
+				// @todo Doesn't work and cannot find another way to filter all widget contents
+				//add_filter( 'widget_content', array( $this, 'filter_content' ), $priority );
 			}
 		}
 	}
@@ -219,36 +220,64 @@ jQuery(function( $ ){
 		})
 		.blur();
 
+	// "has effect on"
+	$( 'input#encode_emails' )
+		.change(function(){
+			if ( $( this ).attr( 'checked' ) )
+				$( 'input#encode_mailtos' ).attr( 'checked', true );
+		})
+		.change();
+
+	$( 'input#encode_mailtos' )
+		.change(function(){
+			if ( ! $( this ).attr( 'checked' ) )
+				$( 'input#encode_emails' ).attr( 'checked', false );
+		});
+
 	// add form-table class to Encoder Form tables
 	$( '.email-encoder-form table' ).addClass( 'form-table' );
+
+	// slide postbox
+	$( '.postbox' ).find( '.handlediv, .hndle' ).click(function(){
+		var $inside = $( this ).parent().find( '.inside' );
+
+		if ( $inside.css( 'display' ) == 'block' ) {
+			$inside.css({ display:'block' }).slideUp();
+		} else {
+			$inside.css({ display:'none' }).slideDown();
+		}
+	});
 });
 </script>
 	<div class="wrap">
 		<div class="icon32" id="icon-options-custom" style="background:url( <?php echo plugins_url( 'images/icon-email-encoder-bundle.png', __FILE__ ) ?> ) no-repeat 50% 50%"><br></div>
 		<h2>Email Encoder Bundle</h2>
 
-		<form method="post" action="options.php">
 			<script language="javascript">
 				var methodInfo = <?php echo json_encode( $this->methods ) ?>;
 			</script>
-			<?php
-				settings_fields( $this->domain );
-				$this->_set_options();
-				$options = $this->options;
-			?>
 		<div class="postbox-container metabox-holder meta-box-sortables" style="width: 69%">
 		<div style="margin:0 5px;">
 			<div class="postbox">
 				<div class="handlediv" title="<?php _e( 'Click to toggle' ) ?>"><br/></div>
 				<h3 class="hndle"><?php _e( 'General Settings' ) ?></h3>
 				<div class="inside">
+				<form method="post" action="options.php">
+				<?php
+					settings_fields( $this->domain );
+					$this->_set_options();
+					$options = $this->options;
+				?>
+					<?php if ( is_plugin_active( 'wp-mailto-links/wp-mailto-links.php' ) ): ?>
+						<p class="description"><?php _e( 'Warning: "WP Mailto Links"-plugin is also activated, which could cause conflicts.', $this->domain ) ?></p>
+					<?php endif; ?>
 					<fieldset class="options">
 						<table class="form-table">
 						<tr>
 							<th><?php _e( 'Choose encoding method', $this->domain ) ?></th>
 							<td><label><select id="<?php echo $this->options_name ?>[method]" name="<?php echo $this->options_name ?>[method]" class="method-info-select postform">
 								<?php foreach ( $this->methods AS $method => $info ): ?>
-									<option value="<?php echo $method ?>" <?php if ( $this->method == $method ) echo 'selected="selected"' ?>><?php echo $info[ 'name' ] ?></option>
+									<option value="<?php echo $method ?>" <?php if ( $this->method == $method ) echo 'selected="selected"' ?>><?php echo $info[ 'name' ]; if ( $method == 'lim_email_ascii' ){ echo ' (recommended)'; } ?></option>
 								<?php endforeach; ?>
 									<option value="random" <?php if ( $this->method == 'random' ) echo 'selected="selected"' ?>><?php echo __( 'Random', $this->domain ) ?></option>
 								</select>
@@ -261,15 +290,12 @@ jQuery(function( $ ){
 								<label><input type="checkbox" name="<?php echo $this->options_name ?>[encode_tags]" value="1" checked="checked" disabled="disabled" />
 									<span><?php _e( 'Encode <code>[encode_email]</code> tags', $this->domain ) ?></span>
 								</label>
-							<br/><label><input type="checkbox" id="<?php echo $this->options_name ?>[encode_mailtos]" name="<?php echo $this->options_name ?>[encode_mailtos]" value="1" <?php checked('1', (int) $options['encode_mailtos']); ?> />
+							<br/><label><input type="checkbox" id="encode_mailtos" name="<?php echo $this->options_name ?>[encode_mailtos]" value="1" <?php checked('1', (int) $options['encode_mailtos']); ?> />
 									<span><?php _e( 'Encode mailto-links', $this->domain ) ?></span>
 								</label>
-							<br/><label><input type="checkbox" id="<?php echo $this->options_name ?>[encode_emails]" name="<?php echo $this->options_name ?>[encode_emails]" value="1" <?php checked('1', (int) $options['encode_emails']); ?> />
+							<br/><label><input type="checkbox" id="encode_emails" name="<?php echo $this->options_name ?>[encode_emails]" value="1" <?php checked('1', (int) $options['encode_emails']); ?> />
 									<span><?php _e( 'Replace plain emailaddresses to encoded mailto-links', $this->domain ) ?></span>
 								</label>
-								<?php if ( $enc_conflict ): ?>
-									<br/><span class="description"><?php _e( 'Warning: "WP Mailto Links Plugin" is activated, turn off this option when a conflict occures.', $this->domain ) ?></span>
-								<?php endif; ?>
 							</td>
 						</tr>
 						<tr>
@@ -291,9 +317,19 @@ jQuery(function( $ ){
 						</tr>
 						</table>
 					</fieldset>
+
+					<fieldset class="options">
+						<table class="form-table">
+						<tr>
+							<th><?php _e( '"Email Encoder Form" settings', $this->domain ) ?></th>
+							<td><label><input type="checkbox" id="<?php echo $this->options_name ?>[powered_by]" name="<?php echo $this->options_name ?>[powered_by]" value="1" <?php checked('1', (int) $options['powered_by']); ?> /> <span><?php _e( 'Show the "powered by"-link on bottom of the encode form', $this->domain ) ?></span></label></td>
+						</tr>
+						</table>
+					</fieldset>
 					<p class="submit">
 						<input class="button-primary" type="submit" value="<?php _e( 'Save Changes' ) ?>" />
 					</p>
+				</form>
 				</div>
 			</div>
 
@@ -303,12 +339,12 @@ jQuery(function( $ ){
 				<div class="inside">
 					<h4><?php _e( 'Tags', $this->domain ) ?></h4>
 					<ul>
-						<li><code>[encode_email email="..." display="..."]</code> <span class="description"><?php _e( 'Encode the given email, "display" is optional otherwise the email wil be used as display', $this->domain ) ?></span></li>
+						<li><code>[encode_email email="..." display="..." method="..."]</code> <span class="description"><?php _e( 'Encode the given email<br/>"display" is optional otherwise the email wil be used as display<br/>"method" is optional and can be set to use a different method then the options value', $this->domain ) ?></span></li>
 						<li><code>[email_encoder_form]</code> <span class="description"><?php _e( 'Puts an email encoder form in your post', $this->domain ) ?></span></li>
 					</ul>
 					<h4><?php _e( 'Template functions' ) ?></h4>
 					<ul>
-						<li><code>&lt;?php echo encode_email( 'info@myemail.com', 'My Email' ); ?&gt;</code> <span class="description"><?php _e( 'Encode the given email, the second param is display and optional', $this->domain ) ?></span></li>
+						<li><code>&lt;?php echo encode_email( 'info@myemail.com', 'My Email' ); ?&gt;</code> <span class="description"><?php _e( 'Encode the given email<br/>the second param is $display and optional<br/>the thrid param is $method and optional', $this->domain ) ?></span></li>
 						<li><code>&lt;?php echo encode_email_filter( $content ); ?&gt;</code> <span class="description"><?php _e( 'Filter the given content for emails to encode', $this->domain ) ?></span></li>
 					</ul>
 				</div>
@@ -319,18 +355,6 @@ jQuery(function( $ ){
 				<h3 class="hndle"><?php _e( 'Email Encoder Form', $this->domain ) ?></h3>
 				<div class="inside">
 					<?php echo $this->get_encoder_form(); ?>
-
-					<fieldset class="options">
-						<table class="form-table">
-						<tr>
-							<th><?php _e( 'Show "powered by"-link', $this->domain ) ?></th>
-							<td><label><input type="checkbox" id="<?php echo $this->options_name ?>[powered_by]" name="<?php echo $this->options_name ?>[powered_by]" value="1" <?php checked('1', (int) $options['powered_by']); ?> /> <span><?php _e( 'Show the "powered by"-link on bottom of the encode form', $this->domain ) ?></span></label></td>
-						</tr>
-						</table>
-					</fieldset>
-					<p class="submit">
-						<input class="button-primary" type="submit" value="<?php _e( 'Save Changes' ) ?>" />
-					</p>
 				</div>
 			</div>
 		</div>
@@ -359,21 +383,32 @@ jQuery(function( $ ){
 					<h4><img src="<?php echo plugins_url( 'images/icon-wp-external-links.png', __FILE__ ) ?>" width="16" height="16" /> WP External Links</h4>
 					<p><?php _e( 'Manage external links on your site: open in new window/tab, set icon, add "external", add "nofollow" and more.', $this->domain ) ?></p>
 					<ul>
-						<li><a href="<?php echo get_bloginfo( 'url' ) ?>/wp-admin/plugin-install.php?tab=search&type=term&s=WP+External+Links+freelancephp&plugin-search-input=Search+Plugins" target="_blank"><?php _e( 'Get this plugin now' ) ?></a></li>
+						<?php if ( is_plugin_active( 'wp-external-links/wp-external-links.php' ) ): ?>
+							<li><?php _e( 'This plugin is already activated.', $this->domain ) ?> <a href="<?php echo get_bloginfo( 'url' ) ?>/wp-admin/options-general.php?page=wp-external-links/wp-external-links.php"><?php _e( 'Settings' ) ?></a></li>
+						<?php elseif( file_exists( WP_PLUGIN_DIR . '/wp-external-links/wp-external-links.php' ) ): ?>
+							<li><a href="<?php echo get_bloginfo( 'url' ) ?>/wp-admin/plugins.php?plugin_status=inactive"><?php _e( 'Activate this plugin.', $this->domain ) ?></a></li>
+						<?php else: ?>
+							<li><a href="<?php echo get_bloginfo( 'url' ) ?>/wp-admin/plugin-install.php?tab=search&type=term&s=WP+External+Links+freelancephp&plugin-search-input=Search+Plugins"><?php _e( 'Get this plugin now', $this->domain ) ?></a></li>
+						<?php endif; ?>
 						<li><a href="http://wordpress.org/extend/plugins/wp-external-links/" target="_blank">WordPress.org</a> | <a href="http://www.freelancephp.net/wp-external-links-plugin/" target="_blank">FreelancePHP.net</a></li>
 					</ul>
 
 					<h4><img src="<?php echo plugins_url( 'images/icon-wp-mailto-links.png', __FILE__ ) ?>" width="16" height="16" /> WP Mailto Links</h4>
 					<p><?php _e( 'Manage mailto links on your site and protect emails from spambots, set mail icon and more.', $this->domain ) ?></p>
 					<ul>
-						<li><a href="<?php echo get_bloginfo( 'url' ) ?>/wp-admin/plugin-install.php?tab=search&type=term&s=WP+Mailto+Links+freelancephp&plugin-search-input=Search+Plugins" target="_blank"><?php _e( 'Get this plugin now' ) ?></a></li>
+						<?php if ( is_plugin_active( 'wp-mailto-links/wp-mailto-links.php' ) ): ?>
+							<li><?php _e( 'This plugin is already activated.', $this->domain ) ?> <a href="<?php echo get_bloginfo( 'url' ) ?>/wp-admin/options-general.php?page=wp-mailto-links/wp-mailto-links.php"><?php _e( 'Settings' ) ?></a></li>
+						<?php elseif( file_exists( WP_PLUGIN_DIR . '/wp-mailto-links/wp-mailto-links.php' ) ): ?>
+							<li><a href="<?php echo get_bloginfo( 'url' ) ?>/wp-admin/plugins.php?plugin_status=inactive"><?php _e( 'Activate this plugin.', $this->domain ) ?></a></li>
+						<?php else: ?>
+							<li><a href="<?php echo get_bloginfo( 'url' ) ?>/wp-admin/plugin-install.php?tab=search&type=term&s=WP+Mailto+Links+freelancephp&plugin-search-input=Search+Plugins"><?php _e( 'Get this plugin now', $this->domain ) ?></a></li>
+						<?php endif; ?>
 						<li><a href="http://wordpress.org/extend/plugins/wp-mailto-links/" target="_blank">WordPress.org</a> | <a href="http://www.freelancephp.net/wp-mailto-links-plugin/" target="_blank">FreelancePHP.net</a></li>
 					</ul>
 				</div>
 			</div>
 		</div>
 		</div>
-		</form>
 		<div class="clear"></div>
 	</div>
 <?php
@@ -515,16 +550,14 @@ jQuery(function( $ ){
 	function _callback_shortcode( $match ) {
 		$attrs = shortcode_parse_atts( $match[1] );
 
-		if ( key_exists( 'email', $attrs ) )
-			$email = $attrs[ 'email' ];
+		if ( ! key_exists( 'email', $attrs ) )
+			return '';
 
-		if ( key_exists( 'display', $attrs ) ) {
-			$display = $attrs[ 'display' ];
-		} else {
-			$display = $attrs[ 'email' ];
-		}
+		$email = $attrs[ 'email' ];
+		$display = ( key_exists( 'display', $attrs ) ) ? $attrs[ 'display' ] : $attrs[ 'email' ];
+		$method = ( key_exists( 'method', $attrs ) ) ? $attrs[ 'method' ] : NULL;
 
-		return $this->encode( $email, $display );
+		return $this->encode( $email, $display, $method );
 	}
 
 	/**
@@ -559,9 +592,7 @@ if ( ! empty( $_GET['ajax'] ) ):
 	$email = $_GET['email'];
 	$display = ( empty( $_GET['display'] ) ) ? $email : $_GET['display'];
 
-	$WP_Email_Encoder_Bundle->set_method( $method );
-
-	echo $WP_Email_Encoder_Bundle->encode( $email, $display );
+	echo $WP_Email_Encoder_Bundle->encode( $email, $display, $method );
 	exit;
 endif;
 
@@ -571,12 +602,13 @@ endif;
  * @global WP_Email_Encoder $WP_Email_Encoder_Bundle
  * @param string $email
  * @param string $display  if non given will be same as email
+ * @param string $method Optional, else the default setted method will; be used
  * @return string
  */
 if ( ! function_exists( 'encode_email' )  ):
-	function encode_email( $email, $display = NULL ) {
+	function encode_email( $email, $display = NULL, $method = NULL ) {
 		global $WP_Email_Encoder_Bundle;
-		return $WP_Email_Encoder_Bundle->encode( $email, $display );
+		return $WP_Email_Encoder_Bundle->encode( $email, $display, $method );
 	}
 endif;
 

@@ -3,7 +3,7 @@ Contributors: freelancephp
 Tags: email, hide, mailto, spam, protection, spambots, encoder, encrypt, encode, obfuscate, antispam, spamming
 Requires at least: 2.7.0
 Tested up to: 3.1
-Stable tag: 0.31
+Stable tag: 0.32
 
 Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
@@ -70,6 +70,12 @@ Optionally you can add a name and description to be showed in the admin panel, l
 
 == Changelog ==
 
+= 0.32 =
+* Fix IE bug
+* Bug plain emails
+* Optional "method" param for tag and template function, f.e. [encode_email email="test@domain.com" method="ascii"]
+* Small adjustments
+
 = 0.31 =
 * Fixed tiny bug (incorrect var-name $priority on line 100 of email-encoder-bundle.php)
 
@@ -118,6 +124,12 @@ Optionally you can add a name and description to be showed in the admin panel, l
 * Title icon on Admin Options Page was made by [Jack Cai](http://www.doublejdesign.co.uk/)
 
 == Upgrade Notice ==
+
+= 0.32 =
+* Fix IE bug
+* Bug plain emails
+* Optional "method" param for tag and template function
+* Small adjustments
 
 = 0.30 =
 * Some bug fixes

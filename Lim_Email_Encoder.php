@@ -2,11 +2,11 @@
 /**
  * Lim_Email_Encoder Class
  *
- * Protecting email-spamming by replacing them with one of the registered encoding- or javascript-methods
+ * Protecting email-spamming by replacing them with one of the registered encoding-methods
  *
  * @package  Lim_Email_Encoder
  * @author   Victor Villaverde Laan
- * @version  0.22
+ * @version  0.32
  * @link     http://www.freelancephp.net/email-encoder-php-class/
  * @license  MIT license
  */
@@ -47,16 +47,7 @@ class Lim_Email_Encoder {
 	 * @return $this
 	 */
 	function set_method( $method ) {
-		if ( 'random' == $method ) {
-			// set a random method
-			$this->method = array_rand( $this->methods );
-		} elseif ( ! key_exists( $method, $this->methods ) ) {
-			// set default method
-			$this->method = 'lim_email_html_encode';
-		} else {
-			// add 'lim_email_' prefix if not already set
-			$this->method = ( strpos( $method, 'lim_email_' ) !== FALSE ) ? $method : 'lim_email_' . $method;
-		}
+		$this->method = $this->_get_method( $method );
 
 		return $this;
 	}
@@ -65,9 +56,10 @@ class Lim_Email_Encoder {
 	 * Encode the given email into an encoded HTML link
 	 * @param string $email
 	 * @param string $display Optional, if not set display will be the email
+	 * @param string $method Optional, else the default setted method will; be used
 	 * @return string
 	 */
-	function encode( $email, $display = NULL ) {
+	function encode( $email, $display = NULL, $method = NULL ) {
 		// decode entities
 		$email = html_entity_decode( $email );
 
@@ -75,8 +67,15 @@ class Lim_Email_Encoder {
 		if ( $display === NULL )
 			$display = $email;
 
+		// set encode method
+		if ( $method === NULL ) {
+			$method = $this->method;
+		} else {
+			$method = $this->_get_method( $method );
+		}
+
 		// get encoded email code
-		return call_user_func( $this->method, $email, $display );
+		return call_user_func( $method, $email, $display );
 	}
 
 	/**
@@ -141,6 +140,23 @@ class Lim_Email_Encoder {
 		}
 
 		closedir( $handle );
+	}
+
+	function _get_method( $method ) {
+		$method = strtolower( $method );
+
+		if ( 'random' == $method ) {
+			// set a random method
+			$method = array_rand( $this->methods );
+		} else {
+			// add 'lim_email_' prefix if not already set
+			$method = ( strpos( $method, 'lim_email_' ) !== FALSE ) ? $method : 'lim_email_' . $method;
+
+			if ( ! key_exists( $method, $this->methods ) )
+				$method = 'lim_email_html_encode'; // set default method
+		}
+
+		return $method;
 	}
 
 } // end class Lim_Email_Encoder
