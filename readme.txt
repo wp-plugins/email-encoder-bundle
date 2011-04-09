@@ -3,7 +3,7 @@ Contributors: freelancephp
 Tags: email, hide, mailto, spam, protection, spambots, encoder, encrypt, encode, obfuscate, antispam, spamming
 Requires at least: 2.7.0
 Tested up to: 3.1
-Stable tag: 0.32
+Stable tag: 0.40
 
 Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
@@ -65,10 +65,18 @@ Optionally you can add a name and description to be showed in the admin panel, l
 
 == Screenshots ==
 
-1. Admin Options Page
 1. Email Encoder Form on the Site
+1. Admin Options Page
 
 == Changelog ==
+
+= 0.40 =
+* Added option for setting CSS classes
+* Improved RSS protection
+* Removed Lim_Email_Encoder class (now all handled by the main class)
+* Enabled setting checkbox for filtering posts
+* Fixed PHP / WP notices
+* Added param for encode methods: $obj
 
 = 0.32 =
 * Fix IE bug
@@ -124,6 +132,11 @@ Optionally you can add a name and description to be showed in the admin panel, l
 * Title icon on Admin Options Page was made by [Jack Cai](http://www.doublejdesign.co.uk/)
 
 == Upgrade Notice ==
+
+= 0.40 =
+* Added option for setting CSS classes
+* Improved RSS protection
+* And more...
 
 = 0.32 =
 * Fix IE bug

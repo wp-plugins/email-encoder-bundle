@@ -4,25 +4,23 @@ Plugin Name: Email Encoder Bundle
 Plugin URI: http://www.freelancephp.net/email-encoder-php-class-wp-plugin/
 Description: Protect email addresses on your site from spambots and being used for spamming by using one of the encoding methods.
 Author: Victor Villaverde Laan
-Version: 0.32
+Version: 0.40
 Author URI: http://www.freelancephp.net
 License: Dual licensed under the MIT and GPL licenses
 */
-// include parent class
-require_once dirname( __FILE__ ) . '/Lim_Email_Encoder.php';
 
 /**
- * Class WP_Email_Encoder_Bundle, child of Lim_Email_Encoder
- * @package Lim_Email_Encoder
+ * Class WP_Email_Encoder_Bundle
+ * @package WP_Email_Encoder_Bundle
  * @category WordPress Plugins
  */
-class WP_Email_Encoder_Bundle extends Lim_Email_Encoder {
+class WP_Email_Encoder_Bundle {
 
 	/**
 	 * Current version
 	 * @var string
 	 */
-	var $version = '0.32';
+	var $version = '0.40';
 
 	/**
 	 * Used as prefix for options entry and could be used as text domain (for translations)
@@ -43,6 +41,8 @@ class WP_Email_Encoder_Bundle extends Lim_Email_Encoder {
 			'method' => NULL,
 			'encode_mailtos' => 1,
 			'encode_emails' => 1,
+			'class_name' => 'mailto-link',
+			'filter_posts' => 1,
 			'filter_widgets' => 1,
 			'filter_comments' => 1,
 			'filter_rss' => 1,
@@ -54,10 +54,21 @@ class WP_Email_Encoder_Bundle extends Lim_Email_Encoder {
 	 * @var array
 	 */
 	var $regexp_patterns = array(
-		'mailto' => '/<a.*?href=["\']mailto:(.*?)["\'].*?>(.*?)<\/a[\s+]*>/i',
-		'tag' => '/\[encode_email\s+(.*?)\]/i',
-		'email' => '/([A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6})/i',
+		'mailto' => '/<a.*?href=["\']mailto:(.*?)["\'].*?>(.*?)<\/a[\s+]*>/is',
+		'tag' => '/\[encode_email\s+(.*?)\]/is',
+		'email' => '/([A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6})/is',
 	);
+
+	/**
+	 * @var array
+	 */
+	var $methods = array();
+
+	/**
+	 * @var string
+	 */
+	var $method = NULL;
+
 
 	/**
 	 * PHP4 constructor
@@ -70,7 +81,11 @@ class WP_Email_Encoder_Bundle extends Lim_Email_Encoder {
 	 * PHP5 constructor
 	 */
 	function __construct() {
-		parent::__construct();
+		// include all available method files
+		$this->_load_methods();
+
+		// set method
+		$this->set_method( $this->options[ 'method' ] );
 
 		// set option values
 		$this->_set_options();
@@ -78,31 +93,59 @@ class WP_Email_Encoder_Bundle extends Lim_Email_Encoder {
 		// load text domain for translations
 		load_plugin_textdomain( $this->domain, dirname( __FILE__ ) . '/lang/', basename( dirname(__FILE__) ) . '/lang/' );
 
+		// set uninstall hook
+		if ( function_exists( 'register_deactivation_hook' ) )
+			register_deactivation_hook( __FILE__, array( $this, 'deactivation' ));
+
 		// add actions
-		add_action( 'init', array( $this, 'init' ) );
-		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
-		add_action( 'admin_init', array( &$this, 'admin_init' ) );
-		add_action( 'the_posts', array( &$this, 'the_posts' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
+		add_action( 'the_posts', array( $this, 'the_posts' ) );
+
+		// set filters
+		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ), $priority );
 	}
 
 	/**
-	 * Callback init
+	 * pre_get_posts filter
+	 * @param object $query
 	 */
-	function init() {
-		if ( is_admin() ) {
-			// set uninstall hook
-			if ( function_exists( 'register_deactivation_hook' ) )
-				register_deactivation_hook( __FILE__, array( &$this, 'deactivation' ));
-		} else {
-			$priority = 100;
+	function pre_get_posts( $query ) {
+		if ( is_admin() )
+			return $query;
 
-			// set content filters
-			add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ), $priority );
+		$priority = 100;
+
+		if ( $query->is_feed ) {
+			// rss feed
+			if ( $this->options[ 'filter_rss' ] ) {
+				add_filter( 'the_title', array( $this, '_filter_rss_callback' ), $priority );
+				add_filter( 'the_content', array( $this, '_filter_rss_callback' ), $priority );
+				add_filter( 'the_excerpt', array( $this, '_filter_rss_callback' ), $priority );
+				add_filter( 'the_title_rss', array( $this, '_filter_rss_callback' ), $priority );
+				add_filter( 'the_content_rss', array( $this, '_filter_rss_callback' ), $priority );
+				add_filter( 'the_excerpt_rss', array( $this, '_filter_rss_callback' ), $priority );
+				add_filter( 'comment_text_rss', array( $this, '_filter_rss_callback' ), $priority );
+				add_filter( 'comment_author_rss ', array( $this, '_filter_rss_callback' ), $priority );
+				add_filter( 'the_category_rss ', array( $this, '_filter_rss_callback' ), $priority );
+				add_filter( 'the_content_feed', array( $this, '_filter_rss_callback' ), $priority );
+				add_filter( 'author feed link', array( $this, '_filter_rss_callback' ), $priority );
+				add_filter( 'feed_link', array( $this, '_filter_rss_callback' ), $priority );
+			}
+		} else {
+			// post content
+			if ( $this->options[ 'filter_posts' ] ) {
+				add_filter( 'the_title', array( $this, '_filter_callback' ), $priority );
+				add_filter( 'the_content', array( $this, '_filter_callback' ), $priority );
+				add_filter( 'the_excerpt', array( $this, '_filter_callback' ), $priority );
+				add_filter( 'get_the_excerpt', array( $this, '_filter_callback' ), $priority );
+			}
 
 			// comments
 			if ( $this->options[ 'filter_comments' ] ) {
 				add_filter( 'comment_text', array( $this, '_filter_callback' ), $priority );
 				add_filter( 'comment_excerpt', array( $this, '_filter_callback' ), $priority );
+				add_filter( 'comment_url', array( $this, '_filter_callback' ), $priority );
 				add_filter( 'get_comment_author_url', array( $this, '_filter_callback' ), $priority );
 				add_filter( 'get_comment_author_link', array( $this, '_filter_callback' ), $priority );
 				add_filter( 'get_comment_author_url_link', array( $this, '_filter_callback' ), $priority );
@@ -117,30 +160,6 @@ class WP_Email_Encoder_Bundle extends Lim_Email_Encoder {
 				// @todo Doesn't work and cannot find another way to filter all widget contents
 				//add_filter( 'widget_content', array( $this, 'filter_content' ), $priority );
 			}
-		}
-	}
-
-	/**
-	 * pre_get_posts filter
-	 * @param object $query
-	 */
-	function pre_get_posts( $query ) {
-		$priority = 100;
-
-		if ( $query->is_feed ) {
-			// rss feed
-			if ( $this->options[ 'filter_rss' ] ) {
-				add_filter( 'the_content_rss', array( $this, '_filter_rss_callback' ), $priority );
-				add_filter( 'the_content_feed', array( $this, '_filter_rss_callback' ), $priority );
-				add_filter( 'the_excerpt_rss', array( $this, '_filter_rss_callback' ), $priority );
-				add_filter( 'comment_text_rss', array( $this, '_filter_rss_callback' ), $priority );
-			}
-		} else {
-			// post content
-			add_filter( 'the_title', array( $this, '_filter_callback' ), $priority );
-			add_filter( 'the_content', array( $this, '_filter_callback' ), $priority );
-			add_filter( 'the_excerpt', array( $this, '_filter_callback' ), $priority );
-			add_filter( 'get_the_excerpt', array( $this, '_filter_callback' ), $priority );
 		}
 
 		return $query;
@@ -158,6 +177,7 @@ class WP_Email_Encoder_Bundle extends Lim_Email_Encoder {
 			if ( stripos( $post->post_content, '[email_encoder_form]' ) > -1 ) {
 				// add style and script for ajax encoder
 				wp_enqueue_script( 'email_encoder', plugins_url( 'js/email-encoder-bundle.js', __FILE__ ), array( 'jquery' ), $this->version );
+
 				// replace tag by form
 				$posts[$key]->post_content = str_replace( '[email_encoder_form]', $this->get_encoder_form(), $post->post_content );
 				break;
@@ -174,7 +194,7 @@ class WP_Email_Encoder_Bundle extends Lim_Email_Encoder {
 		if ( function_exists('add_options_page') AND current_user_can('manage_options') ) {
 			// add options page
 			$page = add_options_page( 'Email Encoder Bundle', 'Email Encoder Bundle',
-								'manage_options', __FILE__, array( &$this, 'options_page' ) );
+								'manage_options', __FILE__, array( $this, 'options_page' ) );
 		}
 	}
 
@@ -299,8 +319,13 @@ jQuery(function( $ ){
 							</td>
 						</tr>
 						<tr>
+							<th><?php _e( 'Set class for mailto-links', $this->domain ) ?></th>
+							<td><label><input type="text" id="<?php echo $this->options_name ?>[class_name]" name="<?php echo $this->options_name ?>[class_name]" value="<?php echo $options['class_name']; ?>" />
+								<span><?php _e( 'Set class-attribute for encoded mailto links (optional)', $this->domain ) ?></span></label></td>
+						</tr>
+						<tr>
 							<th><?php _e( 'Options has effect on', $this->domain ) ?></th>
-							<td><label><input type="checkbox" name="<?php echo $this->options_name ?>[filter_posts]" value="1" checked="checked" disabled="disabled" />
+							<td><label><input type="checkbox" name="<?php echo $this->options_name ?>[filter_posts]" value="1" checked="<?php checked('1', (int) $options['filter_posts']); ?>" />
 										<span><?php _e( 'Posts', $this->domain ) ?></span>
 									</label>
 								<br/><label><input type="checkbox" id="<?php echo $this->options_name ?>[filter_comments]" name="<?php echo $this->options_name ?>[filter_comments]" value="1" <?php checked('1', (int) $options['filter_comments']); ?> />
@@ -519,11 +544,16 @@ jQuery(function( $ ){
 		if ( empty( $saved_options ) ) {
 			$saved_options = get_option( $this->domain . 'options' );
 		}
+		// upgrade to 0.11
+		if ( ! isset( $saved_options[ 'class_name' ] ) ) {
+			// set default
+			$saved_options[ 'class_name' ] = $this->options[ 'class_name' ];
+		}
 
 		// set all options
 		if ( ! empty( $saved_options ) ) {
 			foreach ( $this->options AS $key => $option ) {
-				$this->options[ $key ] = $saved_options[ $key ];
+				$this->options[ $key ] = ( empty( $saved_options[ $key ] ) ) ? '' : $saved_options[ $key ];
 			}
 		}
 
@@ -573,6 +603,130 @@ jQuery(function( $ ){
 	function _filter_rss_callback( $content ) {
 		return preg_replace( $this->regexp_patterns, '*protected email*', $content );
 	}
+
+
+	/**
+	 * Lim_Email_Encoder Class integrated
+	 */
+
+		/**
+	 * Set the encode method to use
+	 * @param string $method  can be the name of the method or 'random'
+	 * @return $this
+	 */
+	function set_method( $method ) {
+		$this->method = $this->_get_method( $method );
+
+		return $this;
+	}
+
+	/**
+	 * Encode the given email into an encoded HTML link
+	 * @param string $email
+	 * @param string $display Optional, if not set display will be the email
+	 * @param string $method Optional, else the default setted method will; be used
+	 * @return string
+	 */
+	function encode( $email, $display = NULL, $method = NULL ) {
+		// decode entities
+		$email = html_entity_decode( $email );
+
+		// set email as display
+		if ( $display === NULL )
+			$display = $email;
+
+		// set encode method
+		if ( $method === NULL ) {
+			$method = $this->method;
+		} else {
+			$method = $this->_get_method( $method );
+		}
+
+		// get encoded email code
+		return call_user_func( $method, $email, $display, $this );
+	}
+
+	/**
+	 * Convert randomly chars to htmlentities
+	 * This method is partly taken from WordPress
+	 * @link http://codex.wordpress.org/Function_Reference/antispambot
+	 * @static
+	 * @param string $value
+	 * @return string
+	 */
+	function get_htmlent( $value ) {
+		// check if antispambot WordPress function exists
+		if ( function_exists( 'antispambot' ) ) {
+			$enc_value = antispambot( $value );
+		} else {
+			$enc_value = '';
+			srand( (float) microtime() * 1000000 );
+
+			for ( $i = 0; $i < strlen( $value ); $i = $i + 1 ) {
+				$j = floor( rand( 0, 1 ) );
+
+				if ( $j == 0 ) {
+					$enc_value .= '&#' . ord( substr( $value, $i, 1 ) ).';';
+				} elseif ( $j == 1 ) {
+					$enc_value .= substr( $value, $i, 1 );
+				}
+			}
+		}
+
+		$enc_value = str_replace( '@', '&#64;', $enc_value );
+
+		return $enc_value;
+	}
+
+	/**
+	 * Load available methods
+	 * @return void
+	 */
+	function _load_methods() {
+		$method_dir = dirname(__FILE__) . '/methods';
+		$handle = opendir( $method_dir );
+
+		// dir not found
+		if ( ! $handle )
+			return;
+
+		// include all methods inside the method folder
+		while ( false !== ($file = readdir($handle)) ) {
+			if ( '.php' == substr( $file, -4 ) ) {
+				require_once $method_dir . '/' . $file;
+
+				$name = substr( $file, 0, -4 );
+				$fn = 'lim_email_' . $name;
+
+				if ( function_exists( $fn ) ) {
+					// set method with info
+					$this->methods[$fn] = ( isset( ${ $fn } ) )
+										? ${ $fn }
+										: array( 'name' => $name, 'description' => $name );
+				}
+			}
+		}
+
+		closedir( $handle );
+	}
+
+	function _get_method( $method ) {
+		$method = strtolower( $method );
+
+		if ( 'random' == $method ) {
+			// set a random method
+			$method = array_rand( $this->methods );
+		} else {
+			// add 'lim_email_' prefix if not already set
+			$method = ( strpos( $method, 'lim_email_' ) !== FALSE ) ? $method : 'lim_email_' . $method;
+
+			if ( ! key_exists( $method, $this->methods ) )
+				$method = 'lim_email_html_encode'; // set default method
+		}
+
+		return $method;
+	}
+
 
 } // end class WP_Email_Encoder_Bundle
 
@@ -628,4 +782,4 @@ if ( ! function_exists( 'encode_email_filter' )  ):
 	}
 endif;
 
-?>
+/*?> // ommit closing tag, to prevent unwanted whitespace at the end of the parts generated by the included files */
