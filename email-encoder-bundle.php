@@ -325,7 +325,7 @@ jQuery(function( $ ){
 						</tr>
 						<tr>
 							<th><?php _e( 'Options has effect on', $this->domain ) ?></th>
-							<td><label><input type="checkbox" name="<?php echo $this->options_name ?>[filter_posts]" value="1" checked="<?php checked('1', (int) $options['filter_posts']); ?>" />
+							<td><label><input type="checkbox" name="<?php echo $this->options_name ?>[filter_posts]" value="1" <?php checked('1', (int) $options['filter_posts']); ?> />
 										<span><?php _e( 'Posts', $this->domain ) ?></span>
 									</label>
 								<br/><label><input type="checkbox" id="<?php echo $this->options_name ?>[filter_comments]" name="<?php echo $this->options_name ?>[filter_comments]" value="1" <?php checked('1', (int) $options['filter_comments']); ?> />
