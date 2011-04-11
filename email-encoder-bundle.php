@@ -544,10 +544,11 @@ jQuery(function( $ ){
 		if ( empty( $saved_options ) ) {
 			$saved_options = get_option( $this->domain . 'options' );
 		}
-		// upgrade to 0.11
+		// upgrade to 0.40
 		if ( ! isset( $saved_options[ 'class_name' ] ) ) {
 			// set default
 			$saved_options[ 'class_name' ] = $this->options[ 'class_name' ];
+			$saved_options[ 'filter_posts' ] = $this->options[ 'filter_posts' ];
 		}
 
 		// set all options
