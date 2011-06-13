@@ -46,7 +46,7 @@ function lim_email_ascii( $email, $display, $obj ) {
 	$MailIndexes = str_replace("\\", "\\\\", $MailIndexes);
 	$MailIndexes = str_replace("\"", "\\\"", $MailIndexes);
 
-	return '<script language="javascript">/*<![CDATA[*/'
+	return '<script type="text/javascript">/*<![CDATA[*/'
 			. 'ML="'. $MailLettersEnc .'";'
 			. 'MI="'. $MailIndexes .'";'
 			. 'OT="";'

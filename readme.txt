@@ -2,8 +2,8 @@
 Contributors: freelancephp
 Tags: email, hide, mailto, spam, protection, spambots, encoder, encrypt, encode, obfuscate, antispam, spamming
 Requires at least: 2.7.0
-Tested up to: 3.1
-Stable tag: 0.40
+Tested up to: 3.1.1
+Stable tag: 0.41
 
 Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
@@ -48,6 +48,11 @@ Supports PHP4.3+ and up to latest WP version.
 The `Html Encode` method uses the built-in function of WordPress and does not use any javascript.
 Although JavaScript methods (like `JavaScript ASCII`) are probably better protection against spambots.
 
+= How to encode emails in ALL widgets? =
+
+If the option 'All text widgets' is activated, only all widgets will be filtered for encoding.
+It's possible to encode emails in all widgets by using the Widget Logic plugin and activate the 'wodget_content' filter.
+
 = I want to make some adjustment in one of the encoding methods. What is the best way? =
 
 The best way is to make a copy of that method and make your adjustments in the copy. Give the new method a unique name.
@@ -69,6 +74,12 @@ Optionally you can add a name and description to be showed in the admin panel, l
 1. Admin Options Page
 
 == Changelog ==
+
+= 0.41 =
+* Solved bug by improving regular expression for mailto links
+* Changed script attribute `language` to `type`
+* Script only loaded on options page (hopefully this solves the dashboard toggle problem some people are experiencing)
+* Added support for widget_content filter of the Logic Widget plugin
 
 = 0.40 =
 * Added option for setting CSS classes
@@ -132,6 +143,9 @@ Optionally you can add a name and description to be showed in the admin panel, l
 * Title icon on Admin Options Page was made by [Jack Cai](http://www.doublejdesign.co.uk/)
 
 == Upgrade Notice ==
+
+= 0.41 =
+* Solved some issues
 
 = 0.40 =
 * Added option for setting CSS classes

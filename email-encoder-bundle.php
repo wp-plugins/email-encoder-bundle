@@ -4,7 +4,7 @@ Plugin Name: Email Encoder Bundle
 Plugin URI: http://www.freelancephp.net/email-encoder-php-class-wp-plugin/
 Description: Protect email addresses on your site from spambots and being used for spamming by using one of the encoding methods.
 Author: Victor Villaverde Laan
-Version: 0.40
+Version: 0.41
 Author URI: http://www.freelancephp.net
 License: Dual licensed under the MIT and GPL licenses
 */
@@ -20,7 +20,7 @@ class WP_Email_Encoder_Bundle {
 	 * Current version
 	 * @var string
 	 */
-	var $version = '0.40';
+	var $version = '0.41';
 
 	/**
 	 * Used as prefix for options entry and could be used as text domain (for translations)
@@ -38,7 +38,7 @@ class WP_Email_Encoder_Bundle {
 	 * @var array
 	 */
 	var $options = array(
-			'method' => NULL,
+			'method' => 'lim_email_ascii',
 			'encode_mailtos' => 1,
 			'encode_emails' => 1,
 			'class_name' => 'mailto-link',
@@ -46,6 +46,7 @@ class WP_Email_Encoder_Bundle {
 			'filter_widgets' => 1,
 			'filter_comments' => 1,
 			'filter_rss' => 1,
+			'widget_content_filter' => 0,
 			'powered_by' => 1,
 		);
 
@@ -54,7 +55,7 @@ class WP_Email_Encoder_Bundle {
 	 * @var array
 	 */
 	var $regexp_patterns = array(
-		'mailto' => '/<a.*?href=["\']mailto:(.*?)["\'].*?>(.*?)<\/a[\s+]*>/is',
+		'mailto' => '/<a[^<>]*?href=["\']mailto:(.*?)["\'].*?>(.*?)<\/a[\s+]*>/is',
 		'tag' => '/\[encode_email\s+(.*?)\]/is',
 		'email' => '/([A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6})/is',
 	);
@@ -156,9 +157,8 @@ class WP_Email_Encoder_Bundle {
 				add_filter( 'widget_title', array( $this, '_filter_callback' ), $priority );
 				add_filter( 'widget_text', array( $this, '_filter_callback' ), $priority );
 
-				// Only if Widget Logic plugin is installed
-				// @todo Doesn't work and cannot find another way to filter all widget contents
-				//add_filter( 'widget_content', array( $this, 'filter_content' ), $priority );
+				// Only if Widget Logic plugin is installed and 'widget_content' option is activated
+				add_filter( 'widget_content', array( $this, '_filter_callback' ), $priority );
 			}
 		}
 
@@ -191,7 +191,7 @@ class WP_Email_Encoder_Bundle {
 	 * Callback admin_menu
 	 */
 	function admin_menu() {
-		if ( function_exists('add_options_page') AND current_user_can('manage_options') ) {
+		if ( function_exists( 'add_options_page' ) AND current_user_can( 'manage_options' ) ) {
 			// add options page
 			$page = add_options_page( 'Email Encoder Bundle', 'Email Encoder Bundle',
 								'manage_options', __FILE__, array( $this, 'options_page' ) );
@@ -205,12 +205,19 @@ class WP_Email_Encoder_Bundle {
 		// register settings
 		register_setting( $this->domain, $this->options_name );
 
-		// set dashboard postbox
-		wp_admin_css( 'dashboard' );
-		wp_enqueue_script( 'dashboard' );
+		// actions
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_print_scripts' ) );
+	}
 
-		// add style and script for ajax encoder
-		wp_enqueue_script( 'email_encoder', plugins_url( 'js/email-encoder-bundle.js', __FILE__ ), array( 'jquery' ), $this->version );
+	function admin_print_scripts( $hook_suffix ) {
+		if( $hook_suffix == 'settings_page_email-encoder-bundle/email-encoder-bundle' ) {
+			// set dashboard postbox
+			wp_admin_css( 'dashboard' );
+			wp_enqueue_script( 'dashboard' );
+
+			// add style and script for ajax encoder
+			wp_enqueue_script( 'email_encoder', plugins_url( 'js/email-encoder-bundle.js', __FILE__ ), array( 'jquery' ), $this->version );
+		}
 	}
 
 	/**
@@ -218,7 +225,7 @@ class WP_Email_Encoder_Bundle {
 	 */
 	function options_page() {
 ?>
-<script language="javascript">
+<script type="text/javascript">
 jQuery(function( $ ){
 	// remove message
 	$( '.settings-error' )
@@ -273,7 +280,7 @@ jQuery(function( $ ){
 		<div class="icon32" id="icon-options-custom" style="background:url( <?php echo plugins_url( 'images/icon-email-encoder-bundle.png', __FILE__ ) ?> ) no-repeat 50% 50%"><br></div>
 		<h2>Email Encoder Bundle</h2>
 
-			<script language="javascript">
+			<script type="text/javascript">
 				var methodInfo = <?php echo json_encode( $this->methods ) ?>;
 			</script>
 		<div class="postbox-container metabox-holder meta-box-sortables" style="width: 69%">
@@ -308,13 +315,13 @@ jQuery(function( $ ){
 							<th><?php _e( 'Encode emails', $this->domain ) ?></th>
 							<td>
 								<label><input type="checkbox" name="<?php echo $this->options_name ?>[encode_tags]" value="1" checked="checked" disabled="disabled" />
-									<span><?php _e( 'Encode <code>[encode_email]</code> tags', $this->domain ) ?></span>
+									<span><?php _e( 'Encode <code>[encode_email]</code> shortcode', $this->domain ) ?></span>
 								</label>
 							<br/><label><input type="checkbox" id="encode_mailtos" name="<?php echo $this->options_name ?>[encode_mailtos]" value="1" <?php checked('1', (int) $options['encode_mailtos']); ?> />
-									<span><?php _e( 'Encode mailto-links', $this->domain ) ?></span>
+									<span><?php _e( 'Automatically encode mailto-links', $this->domain ) ?></span>
 								</label>
 							<br/><label><input type="checkbox" id="encode_emails" name="<?php echo $this->options_name ?>[encode_emails]" value="1" <?php checked('1', (int) $options['encode_emails']); ?> />
-									<span><?php _e( 'Replace plain emailaddresses to encoded mailto-links', $this->domain ) ?></span>
+									<span><?php _e( 'Automatically replace plain emailaddresses to encoded mailto-links', $this->domain ) ?></span>
 								</label>
 							</td>
 						</tr>
@@ -326,12 +333,12 @@ jQuery(function( $ ){
 						<tr>
 							<th><?php _e( 'Options has effect on', $this->domain ) ?></th>
 							<td><label><input type="checkbox" name="<?php echo $this->options_name ?>[filter_posts]" value="1" <?php checked('1', (int) $options['filter_posts']); ?> />
-										<span><?php _e( 'Posts', $this->domain ) ?></span>
+										<span><?php _e( 'All posts', $this->domain ) ?></span>
 									</label>
 								<br/><label><input type="checkbox" id="<?php echo $this->options_name ?>[filter_comments]" name="<?php echo $this->options_name ?>[filter_comments]" value="1" <?php checked('1', (int) $options['filter_comments']); ?> />
-									<span><?php _e( 'Comments', $this->domain ) ?></span></label>
+									<span><?php _e( 'All comments', $this->domain ) ?></span></label>
 								<br/><label><input type="checkbox" id="<?php echo $this->options_name ?>[filter_widgets]" name="<?php echo $this->options_name ?>[filter_widgets]" value="1" <?php checked('1', (int) $options['filter_widgets']); ?> />
-									<span><?php _e( 'Text widgets', $this->domain ) ?></span></label>
+									<span><?php if ( $this->options[ 'widget_logic_filter' ] ) { _e( 'All widgets (uses the widget_content filter of the Widget Logic plugin)', $this->domain ); } else { _e( 'All text widgets', $this->domain ); } ?></span></label>
 							</td>
 						</tr>
 						<tr>
@@ -558,7 +565,14 @@ jQuery(function( $ ){
 			}
 		}
 
+		// set encode method
 		$this->set_method( $this->options['method'] );
+
+		// set widget_content filter of Widget Logic plugin
+		$widget_logic_opts = get_option( 'widget_logic' );
+		if ( key_exists( 'widget_logic-options-filter', $widget_logic_opts ) ) {
+			$this->options[ 'widget_logic_filter' ] = ( $widget_logic_opts[ 'widget_logic-options-filter' ] == 'checked' ) ? 1 : 0;
+		}
 	}
 
 	/**
