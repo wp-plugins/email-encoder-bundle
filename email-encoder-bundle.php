@@ -20,7 +20,7 @@ class WP_Email_Encoder_Bundle {
 	 * Current version
 	 * @var string
 	 */
-	var $version = '0.41';
+	var $version = '0.42';
 
 	/**
 	 * Used as prefix for options entry and could be used as text domain (for translations)
@@ -46,7 +46,7 @@ class WP_Email_Encoder_Bundle {
 		'filter_widgets' => 1,
 		'filter_comments' => 1,
 		'filter_rss' => 1,
-		'widget_content_filter' => 0,
+		'widget_logic_filter' => 0,
 		'powered_by' => 1,
 	);
 
