@@ -92,7 +92,7 @@ class WP_Email_Encoder_Bundle {
 		$this->_set_options();
 		
 		// load text domain for translations
-		load_plugin_textdomain( $this->domain, dirname( __FILE__ ) . '/lang/', basename( dirname(__FILE__) ) . '/lang/' );
+		load_plugin_textdomain( $this->domain, FALSE, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 
 		// set uninstall hook
 		if ( function_exists( 'register_deactivation_hook' ) )
@@ -104,7 +104,7 @@ class WP_Email_Encoder_Bundle {
 		add_action( 'the_posts', array( $this, 'the_posts' ) );
 
 		// set filters
-		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ), $priority );
+		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 	}
 
 	/**
