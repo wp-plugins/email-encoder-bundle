@@ -4,7 +4,7 @@ Plugin Name: Email Encoder Bundle
 Plugin URI: http://www.freelancephp.net/email-encoder-php-class-wp-plugin/
 Description: Protect email addresses on your site from spambots and being used for spamming by using one of the encoding methods.
 Author: Victor Villaverde Laan
-Version: 0.41
+Version: 0.42
 Author URI: http://www.freelancephp.net
 License: Dual licensed under the MIT and GPL licenses
 */
@@ -38,17 +38,17 @@ class WP_Email_Encoder_Bundle {
 	 * @var array
 	 */
 	var $options = array(
-			'method' => 'lim_email_ascii',
-			'encode_mailtos' => 1,
-			'encode_emails' => 1,
-			'class_name' => 'mailto-link',
-			'filter_posts' => 1,
-			'filter_widgets' => 1,
-			'filter_comments' => 1,
-			'filter_rss' => 1,
-			'widget_content_filter' => 0,
-			'powered_by' => 1,
-		);
+		'method' => 'lim_email_ascii',
+		'encode_mailtos' => 1,
+		'encode_emails' => 1,
+		'class_name' => 'mailto-link',
+		'filter_posts' => 1,
+		'filter_widgets' => 1,
+		'filter_comments' => 1,
+		'filter_rss' => 1,
+		'widget_content_filter' => 0,
+		'powered_by' => 1,
+	);
 
 	/**
 	 * Regexp
@@ -338,7 +338,7 @@ jQuery(function( $ ){
 								<br/><label><input type="checkbox" id="<?php echo $this->options_name ?>[filter_comments]" name="<?php echo $this->options_name ?>[filter_comments]" value="1" <?php checked('1', (int) $options['filter_comments']); ?> />
 									<span><?php _e( 'All comments', $this->domain ) ?></span></label>
 								<br/><label><input type="checkbox" id="<?php echo $this->options_name ?>[filter_widgets]" name="<?php echo $this->options_name ?>[filter_widgets]" value="1" <?php checked('1', (int) $options['filter_widgets']); ?> />
-									<span><?php if ( $this->options[ 'widget_logic_filter' ] ) { _e( 'All widgets (uses the widget_content filter of the Widget Logic plugin)', $this->domain ); } else { _e( 'All text widgets', $this->domain ); } ?></span></label>
+									<span><?php if ( $this->options[ 'widget_logic_filter' ] ) { _e( 'All widgets (uses the <code>widget_content</code> filter of the Widget Logic plugin)', $this->domain ); } else { _e( 'All text widgets', $this->domain ); } ?></span></label>
 							</td>
 						</tr>
 						<tr>
@@ -570,7 +570,7 @@ jQuery(function( $ ){
 
 		// set widget_content filter of Widget Logic plugin
 		$widget_logic_opts = get_option( 'widget_logic' );
-		if ( key_exists( 'widget_logic-options-filter', $widget_logic_opts ) ) {
+		if ( is_array( $widget_logic_opts ) AND key_exists( 'widget_logic-options-filter', $widget_logic_opts ) ) {
 			$this->options[ 'widget_logic_filter' ] = ( $widget_logic_opts[ 'widget_logic-options-filter' ] == 'checked' ) ? 1 : 0;
 		}
 	}
