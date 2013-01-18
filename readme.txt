@@ -20,17 +20,38 @@ Protect email addresses on your site from spambots and being used for spamming. 
 * Put an Email Encoder Form on your site
 
 = Tags =
-* `[encode_email email="..." display="..." method="..."]` Encode the given email, "display" is optional otherwise the email wil be used as display
-* `[encode_content method="..."]...[/encode_content]` Encode content, "method" is optional otherwise the method set in the admin options page
-* `[email_encoder_form]` Puts an encoder form in your post (check if the option is activated on this page)
+Encode the given email, "display" is optional:
+`[encode_email email="..." display="..."]`
+
+Encode content, "method" is optional:
+`[encode_content method="..."]...[/encode_content]`
+
+Puts an encoder form in your post:
+`[email_encoder_form]`
 
 = Template functions =
-* `<?php echo encode_email( $email, [ $display ], [ $method ], [ $extra_attrs ] ); ?>` Encode the given email, the other params are optional
-* `<?php echo encode_content( $content, [ $method ] ); ?>` Encode the given content for emails to encode
-* `<?php echo encode_email_filter( $content, [ $enc_tags ], [ $enc_mailtos ], [ $enc_plain_emails ] ); ?>` Filter the given content for emails to encode, the other params are optional
+Encode the given email (other params are optional):
+`<?php echo encode_email($email, [$display], [$method], [$extra_attrs]); ?>`
+
+Encode the given content for emails to encode (other param is optional):
+`<?php echo encode_content($content, [$method]); ?>`
+
+Filter the given content for emails to encode (other params are optional):
+`<?php echo encode_email_filter($content, [$enc_tags], [$enc_mailtos], [$enc_plain_emails]); ?>`
+
+= Hooks =
+Add extra code on initialize the Email Encoder Bundle (f.e. add extra filters for encoding):
+`add_action('init_email_encoder_bundle', 'extra_encode_filters');
+
+function extra_encode_filters($filter_callback) {
+	add_filter('some_filter', $filter_callback);
+}`
 
 = Support =
 Supports PHP4.3+ and up to latest WP version.
+
+= Contact =
+[Send our comment](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/)[ or question](http://www.freelancephp.net/contact/)
 
 == Installation ==
 
@@ -63,17 +84,17 @@ The `Html Encode` method is a simple method. Probably JavaScript methods like Ja
 You could add extra params to the mailto link and add `target='_blank'` for opening them in a new window, like:
 `[encode_email email="yourmail@test.nl" display="My Mail" extra_attrs="target='_blank'"]`
 
-= How can I add custom filters for encoding? =
+= How can I encode content of BBPress plugin? =
 
 If you use other plugins that needs to be encoded you can add a callback to the action "init_email_encoder_bundle".
 For Example:
 
-`add_action('init_email_encoder_bundle', 'extra_encode_filters');`
+`add_action('init_email_encoder_bundle', 'extra_encode_filters');
 
-`function extra_encode_filters($filter_callback) {`
-`	add_filter('bbp_get_reply_content', $filter_callback);`
-`	add_filter('bbp_get_topic_content', $filter_callback);`
-`}`
+function extra_encode_filters($filter_callback) {
+	add_filter('bbp_get_reply_content', $filter_callback);
+	add_filter('bbp_get_topic_content', $filter_callback);
+}`
 
 = How to encode emails in ALL widgets? =
 
