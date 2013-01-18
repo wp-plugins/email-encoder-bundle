@@ -22,15 +22,11 @@ Protect email addresses on your site from spambots and being used for spamming. 
 = Tags =
 * `[encode_email email="..." display="..." method="..."]` Encode the given email, "display" is optional otherwise the email wil be used as display
 * `[encode_content method="..."]...[/encode_content]` Encode content, "method" is optional otherwise the method set in the admin options page
-
-Encoder Form:
 * `[email_encoder_form]` Puts an encoder form in your post (check if the option is activated on this page)
 
 = Template functions =
 * `<?php echo encode_email( $email, [ $display ], [ $method ], [ $extra_attrs ] ); ?>` Encode the given email, the other params are optional
 * `<?php echo encode_content( $content, [ $method ] ); ?>` Encode the given content for emails to encode
-
-Extra:
 * `<?php echo encode_email_filter( $content, [ $enc_tags ], [ $enc_mailtos ], [ $enc_plain_emails ] ); ?>` Filter the given content for emails to encode, the other params are optional
 
 = Support =
@@ -53,23 +49,25 @@ By default the option `Encode mailto links` is enabled and the default method is
 Will be encoded, which creates the following output in the source code of your page:
 `<script type="text/javascript">/*<![CDATA[*/ML="mo@k<insc:r.y=-Ehe a\">f/lMt";MI="4CB8HC77=D0C5HJ1>H563DB@:AF=D0C5HJ190<6C0A2JA7J;6HDBBJ5JHA=DI<B?0C5HDEI<B?0C5H4GCE";OT="";for(j=0;j<MI.length;j++){OT+=ML.charAt(MI.charCodeAt(j)-48);}document.write(OT);/*]]>*/</script><noscript>*protected email*</noscript>`
 
-This means spambots are not able to scan this emailaddress from the site.
+Therefore spambots are not able to scan this emailaddress from the site.
 
+Within your posts, you can use the shortcode `[email_encode]`, f.e.:
+`[email_encode email="myname@test.nl" display="My Email"]`
 
 = Which encoding method should I use? =
 
 The `Html Encode` method uses the built-in function of WordPress and does not use any javascript.
 Although JavaScript methods (like `JavaScript ASCII`) are probably better protection against spambots.
 
-= How to encode emails in ALL widgets? =
-
-If the option 'All text widgets' is activated, only all widgets will be filtered for encoding.
-It's possible to encode emails in all widgets by using the Widget Logic plugin and activate the 'widget_content' filter.
-
 = How to create mailto links that opens in a new window? =
 
 You could use add extra params to the mailto link and add `target='_blank'`, f.e.:
 `[encode_email email="yourmail@test.nl" display="My Mail" extra_attrs="target='_blank'"]`
+
+= How to encode emails in ALL widgets? =
+
+If the option 'All text widgets' is activated, only all widgets will be filtered for encoding.
+It's possible to encode emails in all widgets by using the Widget Logic plugin and activate the 'widget_content' filter.
 
 [Do you have another question? Please ask me](http://www.freelancephp.net/contact/)
 
