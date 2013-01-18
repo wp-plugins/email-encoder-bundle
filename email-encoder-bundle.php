@@ -4,7 +4,7 @@ Plugin Name: Email Encoder Bundle
 Plugin URI: http://www.freelancephp.net/email-encoder-php-class-wp-plugin/
 Description: Protect email addresses on your site from spambots and being used for spamming by using one of the encoding methods.
 Author: Victor Villaverde Laan
-Version: 0.50
+Version: 0.60
 Author URI: http://www.freelancephp.net
 License: Dual licensed under the MIT and GPL licenses
 */
@@ -20,7 +20,7 @@ class WP_Email_Encoder_Bundle {
 	 * Current version
 	 * @var string
 	 */
-	var $version = '0.50';
+	var $version = '0.60';
 
 	/**
 	 * Used as prefix for options entry and could be used as text domain (for translations)
@@ -38,7 +38,7 @@ class WP_Email_Encoder_Bundle {
 	 * @var array
 	 */
 	var $options = array(
-		'method' => 'lim_email_ascii',
+		'method' => 'enc_ascii',
 		'encode_mailtos' => 1,
 		'encode_emails' => 0,
 		'skip_posts' => '',
@@ -199,6 +199,8 @@ class WP_Email_Encoder_Bundle {
 			}
 		}
 
+		// action hook
+		do_action('init_email_encoder_bundle', array($this, 'filter_callback'));
 	}
 
 	/**
@@ -687,6 +689,8 @@ class WP_Email_Encoder_Bundle {
 		// set email as display
 		if ($display === NULL) {
 			$display = $email;
+		} else {
+			$display = html_entity_decode($display);
 		}
 
 		// get encode method
@@ -742,12 +746,14 @@ class WP_Email_Encoder_Bundle {
 		$mail_indices = str_replace("\"", "\\\"", $mail_indices);
 
 		return '<script type="text/javascript">/*<![CDATA[*/'
-				. 'ML="'. $mail_letters_enc .'";'
-				. 'MI="'. $mail_indices .'";'
-				. 'OT="";'
-				. 'for(j=0;j<MI.length;j++){'
+				. '(function(){'
+				. 'var ML="'. $mail_letters_enc .'", MI="'. $mail_indices .'",  OT="";'
+				. 'for(var j=0;j<MI.length;j++){'
 				. 'OT+=ML.charAt(MI.charCodeAt(j)-48);'
-				. '}document.write(OT);/*]]>*/</script><noscript>'
+				. '}document.write(OT);'
+				. '}());'
+				. '/*]]>*/'
+				. '</script><noscript>'
 				. $this->options['protection_text']
 				. '</noscript>';
 	}
@@ -789,18 +795,18 @@ class WP_Email_Encoder_Bundle {
 	 * @return string
 	 */
 	function enc_html($value) {
-		// check if antispambot WordPress function exists
+		// check for built-in WP function
 		if (function_exists('antispambot')) {
 			$enc_value = antispambot($value);
 		} else {
 			$enc_value = '';
-			srand( (float) microtime() * 1000000);
+			srand((float) microtime() * 1000000);
 
 			for ($i = 0; $i < strlen($value); $i = $i + 1) {
-				$j = floor( rand( 0, 1 ));
+				$j = floor(rand( 0, 1 ));
 
 				if ($j == 0) {
-					$enc_value .= '&#' . ord( substr($value, $i, 1 ) ).';';
+					$enc_value .= '&#' . ord(substr($value, $i, 1)) . ';';
 				} elseif ($j == 1) {
 					$enc_value .= substr($value, $i, 1);
 				}

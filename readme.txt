@@ -3,7 +3,7 @@ Contributors: freelancephp
 Tags: email, hide, mailto, spam, protection, spambots, encoder, encrypt, encode, obfuscate, antispam, spamming
 Requires at least: 2.7.0
 Tested up to: 3.5.0
-Stable tag: 0.50
+Stable tag: 0.60
 
 Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
@@ -43,31 +43,42 @@ Supports PHP4.3+ and up to latest WP version.
 
 = How do I encode my emailaddress(es)? =
 
-By default the option `Encode mailto links` is enabled and the default method is `JavaScript ASCII`. This means the following html snippet:
+In the posts you can use this shortcode:
+`[email_encode email="myname@test.nl" display="My Email"]`
+
+By default the option `Encode mailto links` and that means this of html snippet will also be encoded:
 `<a href="mailto:myname@test.nl">My Email</a>`
 
-Will be encoded, which creates the following output in the source code of your page:
+The default method is `JavaScript ASCII` the following output will be created in the source code of the page:
 `<script type="text/javascript">/*<![CDATA[*/ML="mo@k<insc:r.y=-Ehe a\">f/lMt";MI="4CB8HC77=D0C5HJ1>H563DB@:AF=D0C5HJ190<6C0A2JA7J;6HDBBJ5JHA=DI<B?0C5HDEI<B?0C5H4GCE";OT="";for(j=0;j<MI.length;j++){OT+=ML.charAt(MI.charCodeAt(j)-48);}document.write(OT);/*]]>*/</script><noscript>*protected email*</noscript>`
 
-Therefore spambots are not able to scan this emailaddress from the site.
-
-Within your posts, you can use the shortcode `[email_encode]`, f.e.:
-`[email_encode email="myname@test.nl" display="My Email"]`
+This code is not readable by spambots and protects your emailaddress.
 
 = Which encoding method should I use? =
 
-The `Html Encode` method uses the built-in function of WordPress and does not use any javascript.
-Although JavaScript methods (like `JavaScript ASCII`) are probably better protection against spambots.
+The `Html Encode` method is a simple method. Probably JavaScript methods like JavaScript ASCII` would be a better protection against spambots.
 
 = How to create mailto links that opens in a new window? =
 
-You could use add extra params to the mailto link and add `target='_blank'`, f.e.:
+You could add extra params to the mailto link and add `target='_blank'` for opening them in a new window, like:
 `[encode_email email="yourmail@test.nl" display="My Mail" extra_attrs="target='_blank'"]`
+
+= How can I add custom filters for encoding? =
+
+If you use other plugins that needs to be encoded you can add a callback to the action "init_email_encoder_bundle".
+For Example:
+
+`add_action('init_email_encoder_bundle', 'extra_encode_filters');`
+
+`function extra_encode_filters($filter_callback) {`
+`	add_filter('bbp_get_reply_content', $filter_callback);`
+`	add_filter('bbp_get_topic_content', $filter_callback);`
+`}`
 
 = How to encode emails in ALL widgets? =
 
-If the option 'All text widgets' is activated, only all widgets will be filtered for encoding.
-It's possible to encode emails in all widgets by using the Widget Logic plugin and activate the 'widget_content' filter.
+If the option 'All text widgets' is activated, only text widgets will be filtered for encoding.
+It's possible to filter all widgets by using the Widget Logic plugin and activate the 'widget_content' filter.
 
 [Do you have another question? Please ask me](http://www.freelancephp.net/contact/)
 
@@ -77,6 +88,12 @@ It's possible to encode emails in all widgets by using the Widget Logic plugin a
 1. Email Encoder Form on the Site
 
 == Changelog ==
+
+= 0.60 =
+* Added hook "init_email_encoder_form" to add custom filters (of other plugins)
+* Added JavaScript code encapsulation for ASCII method
+* Solved reinstalling bug for setting right encoding method
+* Solved bug shortcodes encoded with HTML method
 
 = 0.50 =
 * Added encode method for all kind of contents (template function and shortcode "encode_content")
@@ -155,12 +172,3 @@ It's possible to encode emails in all widgets by using the Widget Logic plugin a
 * [Adam Hunter](http://blueberryware.net) for the encode method 'JavaScript Escape' which is taken from his plugin [Email Spam Protection](http://blueberryware.net/2008/09/14/email-spam-protection/)
 * [Tyler Akins](http://rumkin.com) for the encode method 'JavaScript ASCII Mixer'
 * Title icon on Admin Options Page was made by [Jack Cai](http://www.doublejdesign.co.uk/)
-
-== Upgrade Notice ==
-
-= 0.50 =
-* Added encode method for all kind of contents
-* Added extra param for additional html attributes
-* Added option to skip certain posts from being automatically encoded
-* Added option custom protection text
-* Notice: not possible to add your own methods anymore.
