@@ -2,8 +2,8 @@
 Contributors: freelancephp
 Tags: email, hide, mailto, spam, protection, spambots, encoder, encrypt, encode, obfuscate, antispam, spamming
 Requires at least: 2.7.0
-Tested up to: 3.3.1
-Stable tag: 0.42
+Tested up to: 3.5.0
+Stable tag: 0.50
 
 Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
 
@@ -13,17 +13,27 @@ Protect email addresses on your site from spambots and being used for spamming. 
 
 = Features =
 * Protect plain emails and mailto links
+* Encode all kind of content (text and html)
 * Scanning posts, widgets, comments and RSS feeds
 * Choose one of the high-quality encoding methods
 * Supports querystrings like 'info@myemail.com?subject=Plugin'
-
-* Tag available `[encode_email email="info@myemail.com" display="My Email"]`
-* Template function available `<?php echo encode_email( 'info@myemail.com', 'My Email' ); ?>`
-
-= Extra =
 * Put an Email Encoder Form on your site
-* Developers can add their own methods
 
+= Tags =
+* `[encode_email email="..." display="..." method="..."]` Encode the given email, "display" is optional otherwise the email wil be used as display
+* `[encode_content method="..."]...[/encode_content]` Encode content, "method" is optional otherwise the method set in the admin options page
+
+Encoder Form:
+* `[email_encoder_form]` Puts an encoder form in your post (check if the option is activated on this page)
+
+= Template functions =
+* `<?php echo encode_email( $email, [ $display ], [ $method ], [ $extra_attrs ] ); ?>` Encode the given email, the other params are optional
+* `<?php echo encode_content( $content, [ $method ] ); ?>` Encode the given content for emails to encode
+
+Extra:
+* `<?php echo encode_email_filter( $content, [ $enc_tags ], [ $enc_mailtos ], [ $enc_plain_emails ] ); ?>` Filter the given content for emails to encode, the other params are optional
+
+= Support =
 Supports PHP4.3+ and up to latest WP version.
 
 == Installation ==
@@ -33,15 +43,18 @@ Supports PHP4.3+ and up to latest WP version.
 1. Search for `Email Encode Bundle` and click 'Install Now' or click on the `upload` link to upload `email-encode-bundle.zip`
 1. Click on `Activate plugin`
 
-= Tags =
-* `[encode_email email="..." display="..."]` Encode the given email, "display" is optional otherwise the email wil be used as display
-* `[email_encoder_form]` Puts an encoder form in your post (check if the option is activated on this page)
-
-= Template functions =
-* `<?php echo encode_email( 'info@myemail.com', 'My Email' ); ?>` Encode the given email, the second param is display and optional
-* `<?php echo encode_email_filter( $content ); ?>` Filter the given content for emails to encode
-
 == Frequently Asked Questions ==
+
+= How do I encode my emailaddress(es)? =
+
+By default the option `Encode mailto links` is enabled and the default method is `JavaScript ASCII`. This means the following html snippet:
+`<a href="mailto:myname@test.nl">My Email</a>`
+
+Will be encoded, which creates the following output in the source code of your page:
+`<script type="text/javascript">/*<![CDATA[*/ML="mo@k<insc:r.y=-Ehe a\">f/lMt";MI="4CB8HC77=D0C5HJ1>H563DB@:AF=D0C5HJ190<6C0A2JA7J;6HDBBJ5JHA=DI<B?0C5HDEI<B?0C5H4GCE";OT="";for(j=0;j<MI.length;j++){OT+=ML.charAt(MI.charCodeAt(j)-48);}document.write(OT);/*]]>*/</script><noscript>*protected email*</noscript>`
+
+This means spambots are not able to scan this emailaddress from the site.
+
 
 = Which encoding method should I use? =
 
@@ -51,29 +64,29 @@ Although JavaScript methods (like `JavaScript ASCII`) are probably better protec
 = How to encode emails in ALL widgets? =
 
 If the option 'All text widgets' is activated, only all widgets will be filtered for encoding.
-It's possible to encode emails in all widgets by using the Widget Logic plugin and activate the 'wodget_content' filter.
+It's possible to encode emails in all widgets by using the Widget Logic plugin and activate the 'widget_content' filter.
 
-= I want to make some adjustment in one of the encoding methods. What is the best way? =
+= How to create mailto links that opens in a new window? =
 
-The best way is to make a copy of that method and make your adjustments in the copy. Give the new method a unique name.
-Now you can keep updating this plugin and keep remaining the changes you have made.
-
-= My self-written method doesn't work after upgrading to v0.2. How to fix this? =
-
-The has been some changes to the structure of the encoding methods.
-The first is the 3rd param `$encode_display` has been removed, because the display should always be encoded.
-Second, the methodnames should contain the prefix `lim_email_`.
-Optionally you can add a name and description to be showed in the admin panel, like:
-`$lim_email_yourmethodname = array( 'name' => 'YourMethodName',	'description' => '....' );`
+You could use add extra params to the mailto link and add `target='_blank'`, f.e.:
+`[encode_email email="yourmail@test.nl" display="My Mail" extra_attrs="target='_blank'"]`
 
 [Do you have another question? Please ask me](http://www.freelancephp.net/contact/)
 
 == Screenshots ==
 
-1. Email Encoder Form on the Site
 1. Admin Options Page
+1. Email Encoder Form on the Site
 
 == Changelog ==
+
+= 0.50 =
+* Added encode method for all kind of contents (template function and shortcode "encode_content")
+* Added extra param for additional html attributes (f.e. target="_blank")
+* Added option to skip certain posts from being automatically encoded
+* Added option custom protection text
+* Removed "method" folder. Not possible to add own methods anymore.
+* Other small changes and some refactoring
 
 = 0.42 =
 * Widget Logic options bug
@@ -147,20 +160,9 @@ Optionally you can add a name and description to be showed in the admin panel, l
 
 == Upgrade Notice ==
 
-= 0.41 =
-* Solved some issues
-
-= 0.40 =
-* Added option for setting CSS classes
-* Improved RSS protection
-* And more...
-
-= 0.32 =
-* Fix IE bug
-* Bug plain emails
-* Optional "method" param for tag and template function
-* Small adjustments
-
-= 0.30 =
-* Some bug fixes
-* New: email protection for RSS feeds
+= 0.50 =
+* Added encode method for all kind of contents
+* Added extra param for additional html attributes
+* Added option to skip certain posts from being automatically encoded
+* Added option custom protection text
+* Notice: not possible to add your own methods anymore.
