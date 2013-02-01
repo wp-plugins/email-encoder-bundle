@@ -8,23 +8,25 @@ jQuery(function ($) {
 	// remove message
 	$('.settings-error')
 		.hide()
-		.slideDown(600)
+		.fadeIn(600)
 		.delay(3000)
-		.slideUp(600);
+		.fadeOut(600);
 
 	// set info text for selected encoding method
 	$('.method-info-select')
-		.bind('change blur keyup', function () {
+		.bind('change', function () {
 			var method = $(this).val(),
 				$desc = $(this).parent().find('span.description');
 
 			if (methodInfo && methodInfo[method]) {
+				$desc.hide();
 				$desc.html(methodInfo[method].description || '');
+				$desc.fadeIn();
 			} else {
 				$desc.html('');
 			}
 		})
-		.blur();
+		.change();
 
 	// "has effect on"
 	$('input#encode_emails')

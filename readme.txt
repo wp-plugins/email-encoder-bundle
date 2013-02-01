@@ -1,57 +1,35 @@
 === Email Encoder Bundle ===
 Contributors: freelancephp
-Tags: email, hide, mailto, spam, protection, spambots, encoder, encrypt, encode, obfuscate, antispam, spamming
+Tags: email address, protect, antispam, mailto, spambot, secure, e-mail, email, mail, obfuscate, encode, encoder, encrypt, hide, bot, crawl, spider, robots, spam, protection, harvest, harvesting, security
 Requires at least: 2.7.0
-Tested up to: 3.5.0
-Stable tag: 0.60
+Tested up to: 3.5.1
+Stable tag: 0.70
 
-Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
+Encode mailto links and (plain) email addresses and hide them from spambots. Easy to use, plugin works directly when activated. Save way to protect email addresses on your site.
 
 == Description ==
 
-Protect email addresses on your site from spambots and being used for spamming. This plugin encodes all email adresses so spambots cannot read them.
+Encode mailto links and (plain) email addresses and hide them from spambots. Easy to use, plugin works directly when activated. Save way to protect email addresses on your site.
 
 = Features =
-* Protect plain emails and mailto links
+* Protect all emails and mailto links
+* Check posts, widgets, comments and RSS feeds
 * Encode all kind of content (text and html)
-* Scanning posts, widgets, comments and RSS feeds
-* Choose one of the high-quality encoding methods
-* Supports querystrings like 'info@myemail.com?subject=Plugin'
-* Put an Email Encoder Form on your site
+* Email Encoder Form
 
-= Tags =
-Encode the given email, "display" is optional:
-`[encode_email email="..." display="..."]`
+Also:
+* Use params in mailto links, like: cc, bcc, subject, body
+* Put the Email Encoder Form on your site
+* And more...
 
-Encode content, "method" is optional:
-`[encode_content method="..."]...[/encode_content]`
-
-Puts an encoder form in your post:
-`[email_encoder_form]`
-
-= Template functions =
-Encode the given email (other params are optional):
-`<?php echo encode_email($email, [$display], [$method], [$extra_attrs]); ?>`
-
-Encode the given content for emails to encode (other param is optional):
-`<?php echo encode_content($content, [$method]); ?>`
-
-Filter the given content for emails to encode (other params are optional):
-`<?php echo encode_email_filter($content, [$enc_tags], [$enc_mailtos], [$enc_plain_emails]); ?>`
-
-= Hooks =
-Add extra code on initialize the Email Encoder Bundle (f.e. add extra filters for encoding):
-`add_action('init_email_encoder_bundle', 'extra_encode_filters');
-
-function extra_encode_filters($filter_callback) {
-	add_filter('some_filter', $filter_callback);
-}`
+= Documentation =
+See help tab on the plugin page in the WP Admin Panel.
 
 = Support =
-Supports PHP4.3+ and up to latest WP version.
+Supports PHP 4.3+ and WP 3.0+.
 
 = Contact =
-[Send our comment](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/)[ or question](http://www.freelancephp.net/contact/)
+[Send your comment](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/)[ or question](http://www.freelancephp.net/contact/)
 
 == Installation ==
 
@@ -67,7 +45,7 @@ Supports PHP4.3+ and up to latest WP version.
 In the posts you can use this shortcode:
 `[email_encode email="myname@test.nl" display="My Email"]`
 
-By default the option `Encode mailto links` and that means this of html snippet will also be encoded:
+By default mailto links like this will also be encoded:
 `<a href="mailto:myname@test.nl">My Email</a>`
 
 The default method is `JavaScript ASCII` the following output will be created in the source code of the page:
@@ -75,16 +53,15 @@ The default method is `JavaScript ASCII` the following output will be created in
 
 This code is not readable by spambots and protects your emailaddress.
 
-= Which encoding method should I use? =
-
-The `Html Encode` method is a simple method. Probably JavaScript methods like JavaScript ASCII` would be a better protection against spambots.
-
 = How to create mailto links that opens in a new window? =
 
 You could add extra params to the mailto link and add `target='_blank'` for opening them in a new window, like:
 `[encode_email email="yourmail@test.nl" display="My Mail" extra_attrs="target='_blank'"]`
 
-= How can I encode content of BBPress plugin? =
+In html this will look like:
+`<a href="mailto:yourmail@test.nl" target="_blank">My Mail</a>`
+
+= How can I encode content of BBPress, WP e-Commerce or other plugins? =
 
 If you use other plugins that needs to be encoded you can add a callback to the action "init_email_encoder_bundle".
 For Example:
@@ -92,11 +69,12 @@ For Example:
 `add_action('init_email_encoder_bundle', 'extra_encode_filters');
 
 function extra_encode_filters($filter_callback) {
+	// add filters for BBPress
 	add_filter('bbp_get_reply_content', $filter_callback);
 	add_filter('bbp_get_topic_content', $filter_callback);
 }`
 
-= How to encode emails in ALL widgets? =
+= How to encode emails in all widgets (and not only text widgets)? =
 
 If the option 'All text widgets' is activated, only text widgets will be filtered for encoding.
 It's possible to filter all widgets by using the Widget Logic plugin and activate the 'widget_content' filter.
@@ -106,9 +84,17 @@ It's possible to filter all widgets by using the Widget Logic plugin and activat
 == Screenshots ==
 
 1. Admin Options Page
+1. Check encoded email/content when logged in as admin
 1. Email Encoder Form on the Site
 
 == Changelog ==
+
+= 0.70 (latest) =
+* WP 3.0+ (BETTER NOT TO UPDATE WHEN USING OLDER WP VERSION < 3.0)
+* Fixed bug with extra params
+* Changed texts and added help tabs on admin options page
+* Changed visual check for encoded mails/content by showing icon and success message
+* Solved that all attributes of mailto links remain when encoding
 
 = 0.60 =
 * Added hook "init_email_encoder_form" to add custom filters (of other plugins)

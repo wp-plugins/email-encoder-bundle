@@ -26,7 +26,7 @@ jQuery(function($){
 			method: $wrap.find('#encode_method').val()
 		}, function (data) {
 			$wrap.find('#encoded_output').val(data);
-			$wrap.find('.output').slideDown();
+			$wrap.find('.output').fadeIn();
 		});
 	};
 
@@ -48,11 +48,17 @@ jQuery(function($){
 	// get encoded link on these events
 	$wrap.find('#email, #display')
 			.keyup(function () {
-				// show example how it will appear on the page
-				$wrap.find('#example').html('<a href="mailto:' + $email.val() + '">' + $display.val() + '</a>');
+				if ($display.val().length > 0) {
+					// show example how it will appear on the page
+					$wrap.find('#example')
+						.html('<a href="mailto:' + $email.val() + '">' + $display.val() + '</a>')
+						.parents('tr').fadeIn();
+				} else {
+					$wrap.find('#example').parents('tr').fadeOut();
+				}
 
 				// clear code field
-				$wrap.find('.output').slideUp();
+				$wrap.find('.output').fadeOut();
 				$wrap.find('#encoded_output').val('');
 			})
 			.keyup();
