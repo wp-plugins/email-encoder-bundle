@@ -15,11 +15,8 @@ Encode mailto links and (plain) email addresses and hide them from spambots. Eas
 * Protect all emails and mailto links
 * Check posts, widgets, comments and RSS feeds
 * Encode all kind of content (text and html)
-* Email Encoder Form
-
-Also:
+* Email Encoder Form (in admin and also for your site)
 * Use params in mailto links, like: cc, bcc, subject, body
-* Put the Email Encoder Form on your site
 * And more...
 
 = Documentation =
