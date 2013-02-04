@@ -4,7 +4,7 @@ Plugin Name: Email Encoder Bundle
 Plugin URI: http://www.freelancephp.net/email-encoder-php-class-wp-plugin/
 Description: Protect email addresses on your site and hide them from spambots by using an encoding method. Easy to use, flexible .
 Author: Victor Villaverde Laan
-Version: 0.70
+Version: 0.71
 Author URI: http://www.freelancephp.net
 License: Dual licensed under the MIT and GPL licenses
 */
@@ -20,7 +20,7 @@ class WP_Email_Encoder_Bundle {
 	 * Current version
 	 * @var string
 	 */
-	var $version = '0.70';
+	var $version = '0.71';
 
 	/**
 	 * Used as prefix for options entry and could be used as text domain (for translations)
@@ -54,6 +54,8 @@ class WP_Email_Encoder_Bundle {
 		'filter_rss' => 1,
 		'protection_text' => '*protected email*',
 		'widget_logic_filter' => 0,
+		'show_encoded_check' => 0,
+		'own_admin_menu' => 1,
 		'powered_by' => 1,
 	);
 
@@ -103,20 +105,20 @@ class WP_Email_Encoder_Bundle {
 		// set methods
 		$this->methods = array(
 			'enc_ascii' => array(
-				'name' => _('JavaScript ASCII (recommended)'),
-				'description' => _('This encoding method uses javascript (<a href="http://rumkin.com/tools/mailto_encoder/" target="_blank">original source</a>). <br />Recommended, the savest method.'),
+				'name' => __('JavaScript ASCII (recommended)', $this->domain),
+				'description' => __('This encoding method uses javascript (<a href="http://rumkin.com/tools/mailto_encoder/" target="_blank">original source</a>). <br />Recommended, the savest method.', $this->domain),
 			),
 			'enc_escape' => array(
-				'name' => _('JavaScript Escape'),
-				'description' => _('This encoding method uses the javascript eval() function (<a href="http://blueberryware.net/2008/09/14/email-spam-protection/" target="_blank">original source</a>). <br />Pretty save method.'),
+				'name' => __('JavaScript Escape', $this->domain),
+				'description' => __('This encoding method uses the javascript eval() function (<a href="http://blueberryware.net/2008/09/14/email-spam-protection/" target="_blank">original source</a>). <br />Pretty save method.', $this->domain),
 			),
 			'enc_html' => array(
-				'name' => _('Html Encode'),
-				'description' => _('This encoding method uses the antispambot() function, built-in WordPress (<a href="http://codex.wordpress.org/Function_Reference/antispambot" target="_blank">more info</a>). <br />Not recommended, especially when using the shortcode [encode_content]).'),
+				'name' => __('Html Encode', $this->domain),
+				'description' => __('This encoding method uses the antispambot() function, built-in WordPress (<a href="http://codex.wordpress.org/Function_Reference/antispambot" target="_blank">more info</a>). <br />Not recommended, especially when using the shortcode [encode_content]).', $this->domain),
 			),
 			'random' => array(
-				'name' => _('Random'),
-				'description' => 'Pick each time a random encoding method. <br />Not recommended, especially when using the shortcode [encode_content]).',
+				'name' => __('Random', $this->domain),
+				'description' => __('Pick each time a random encoding method. <br />Not recommended, especially when using the shortcode [encode_content]).', $this->domain),
 			),
 		);
 
@@ -146,7 +148,7 @@ class WP_Email_Encoder_Bundle {
 	 */
 	function wp() {
 		global $user_ID;
-		$this->logged_in = (bool) ($user_ID && current_user_can('level_10'));
+		$this->logged_in = (bool) ($user_ID && current_user_can('manage_options'));
 
 		// shortcodes
 		add_shortcode('email_encoder_form', array($this, 'shortcode_email_encoder_form'));
@@ -281,8 +283,14 @@ class WP_Email_Encoder_Bundle {
 	function admin_menu() {
 		if (function_exists('add_options_page') AND current_user_can('manage_options')) {
 			// add options page
-			$this->page_hook = add_options_page('Email Encoder Bundle', 'Email Encoder Bundle',
-								'manage_options', __FILE__, array($this, 'options_page'));
+			if ($this->options['own_admin_menu']) {
+				$this->page_hook = add_menu_page('Email Encoder Bundle', 'Email Encoder Bundle',
+									'manage_options', __FILE__, array($this, 'options_page'),
+									plugins_url('images/icon-email-encoder-bundle-16.png', __FILE__));
+			} else {
+				$this->page_hook = add_options_page('Email Encoder Bundle', 'Email Encoder Bundle',
+									'manage_options', __FILE__, array($this, 'options_page'));
+			}
 
 			add_action('load-' . $this->page_hook, array($this, 'help_tabs'));
 			add_filter('contextual_help', array($this, 'contextual_help'), 10, 3);
@@ -397,17 +405,17 @@ SIDEBAR;
 	 * @param string $hook_suffix
 	 */
 	function admin_enqueue_scripts($hook_suffix) {
-		if($hook_suffix == 'settings_page_email-encoder-bundle/email-encoder-bundle') {
+		if ($hook_suffix == 'settings_page_email-encoder-bundle/email-encoder-bundle' || $hook_suffix == 'toplevel_page_email-encoder-bundle/email-encoder-bundle') {
 			// set dashboard postbox
 			wp_enqueue_script('dashboard');
 			// set dashboard style for wp < 3.2.0
-			if (isset($wp_version ) AND version_compare( preg_replace('/-.*$/', '', $wp_version ), '3.2.0', '<')) {
+			if (isset($wp_version) AND version_compare(preg_replace('/-.*$/', '', $wp_version), '3.2.0', '<')) {
 				wp_admin_css('dashboard');
 			}
 
 			// add style and script for ajax encoder
-			wp_enqueue_script('email_encoder', plugins_url('js/email-encoder-bundle.js', __FILE__ ), array('jquery'), $this->version);
-			wp_enqueue_script('email_encoder_admin', plugins_url('js/email-encoder-bundle-admin.js', __FILE__ ), array('jquery'), $this->version);
+			wp_enqueue_script('email_encoder', plugins_url('js/email-encoder-bundle.js', __FILE__), array('jquery'), $this->version);
+			wp_enqueue_script('email_encoder_admin', plugins_url('js/email-encoder-bundle-admin.js', __FILE__), array('jquery'), $this->version);
 		}
 	}
 
@@ -425,7 +433,7 @@ SIDEBAR;
 	function options_page() {
 ?>
 	<div class="wrap">
-		<div class="icon32" id="icon-options-custom" style="background:url( <?php echo plugins_url('images/icon-email-encoder-bundle.png', __FILE__ ) ?> ) no-repeat 50% 50%"><br></div>
+		<div class="icon32" id="icon-options-custom" style="background:url(<?php echo plugins_url('images/icon-email-encoder-bundle.png', __FILE__) ?>) no-repeat 50% 50%"><br></div>
 		<h2>Email Encoder Bundle - <em><small><?php _e('Protecting Email Addresses', $this->domain) ?></small></em></h2>
 
 			<script type="text/javascript">
@@ -433,17 +441,17 @@ SIDEBAR;
 			</script>
 		<div class="postbox-container metabox-holder meta-box-sortables" style="width: 68%">
 		<div style="margin:0 2%;">
+		<form method="post" action="options.php">
+		<?php
+			settings_fields($this->domain);
+			$this->set_options();
+			$options = $this->options;
+		?>
 			<div class="postbox">
 				<div class="handlediv" title="<?php _e('Click to toggle') ?>"><br/></div>
 				<h3 class="hndle"><?php _e('General Settings') ?></h3>
 				<div class="inside">
-				<form method="post" action="options.php">
-				<?php
-					settings_fields($this->domain);
-					$this->set_options();
-					$options = $this->options;
-				?>
-					<?php if (is_plugin_active('wp-mailto-links/wp-mailto-links.php') ): ?>
+					<?php if (is_plugin_active('wp-mailto-links/wp-mailto-links.php')): ?>
 						<p class="description"><?php _e('Warning: "WP Mailto Links"-plugin is also activated, which could cause conflicts.', $this->domain) ?></p>
 					<?php endif; ?>
 					<fieldset class="options">
@@ -451,8 +459,8 @@ SIDEBAR;
 						<tr>
 							<th><?php _e('Encoding Method for Protection', $this->domain) ?></th>
 							<td><select id="<?php echo $this->options_name ?>[method]" name="<?php echo $this->options_name ?>[method]" class="method-info-select postform">
-								<?php foreach ($this->methods AS $method => $info ): ?>
-									<option value="<?php echo $method ?>" <?php if ($this->method == $method ) echo 'selected="selected"' ?>><?php echo $info['name']; if ($method == 'lim_email_ascii'){ echo ' (recommended)'; } ?></option>
+								<?php foreach ($this->methods AS $method => $info): ?>
+									<option value="<?php echo $method ?>" <?php if ($this->method == $method) echo 'selected="selected"' ?>><?php echo $info['name']; if ($method == 'lim_email_ascii'){ echo ' (recommended)'; } ?></option>
 								<?php endforeach; ?>
 								</select>
 								<br />
@@ -460,32 +468,30 @@ SIDEBAR;
 							</td>
 						</tr>
 						<tr>
-							<th><?php _e('Protect Emails', $this->domain) ?></th>
+							<th><?php _e('Auto-Protect Emails', $this->domain) ?></th>
 							<td>
-								<label><input type="checkbox" name="<?php echo $this->options_name ?>[encode_tags]" value="1" checked="checked" disabled="disabled" />
-									<span><?php _e( 'Create protected links for <code>[encode_email]</code> shortcodes', $this->domain) ?></span>
-								</label>
-							<br/>
 								<label><input type="checkbox" id="encode_mailtos" name="<?php echo $this->options_name ?>[encode_mailtos]" value="1" <?php checked('1', (int) $options['encode_mailtos']); ?> />
-									<span><?php _e('Protect mailto links', $this->domain) ?></span>
+									<span><?php _e('Protect mailto links', $this->domain) ?></span> <span class="description"><?php _e('(example: &lt;a href="info@myemail.com"&gt;My Email&lt;/a&gt;)', $this->domain) ?></span>
 								</label>
 							<br/><label><input type="checkbox" id="encode_emails" name="<?php echo $this->options_name ?>[encode_emails]" value="1" <?php checked('1', (int) $options['encode_emails']); ?> />
 									<span><?php _e('Replace plain email addresses to protected mailto links', $this->domain) ?></span> <span class="description"><?php _e('(not recommended)', $this->domain) ?></span>
 								</label>
 							<br/>
 							<br/>
+								Apply on:
+								<br/>
 								<label><input type="checkbox" name="<?php echo $this->options_name ?>[filter_posts]" value="1" <?php checked('1', (int) $options['filter_posts']); ?> />
-										<span><?php _e('Protect emails in all posts', $this->domain) ?></span>
+										<span><?php _e('All posts', $this->domain) ?></span>
 									</label>
 								<br/><label><input type="checkbox" id="<?php echo $this->options_name ?>[filter_comments]" name="<?php echo $this->options_name ?>[filter_comments]" value="1" <?php checked('1', (int) $options['filter_comments']); ?> />
-									<span><?php _e('Protect emails in all comments', $this->domain) ?></span></label>
+									<span><?php _e('All comments', $this->domain) ?></span></label>
 								<br/><label><input type="checkbox" id="<?php echo $this->options_name ?>[filter_widgets]" name="<?php echo $this->options_name ?>[filter_widgets]" value="1" <?php checked('1', (int) $options['filter_widgets']); ?> />
-									<span><?php if ($this->options['widget_logic_filter']) { _e('Protect emails in all widgets (uses the <code>widget_content</code> filter of the Widget Logic plugin)', $this->domain); } else { _e('Protect emails in all text widgets', $this->domain); } ?></span></label>
+									<span><?php if ($this->options['widget_logic_filter']) { _e('All widgets (uses the <code>widget_content</code> filter of the Widget Logic plugin)', $this->domain); } else { _e('All text widgets', $this->domain); } ?></span></label>
 							<br/>
 							<br/>
 								<label>
-									<span><?php _e('Skip posts with ID:', $this->domain) ?></span>
-									<input type="text" id="<?php echo $this->options_name ?>[skip_posts]" name="<?php echo $this->options_name ?>[skip_posts]" value="<?php echo $options['skip_posts']; ?>" />
+									<span><?php _e('Do <strong>not</strong> apply Auto-Protect on posts with ID:', $this->domain) ?></span>
+									<br/><input type="text" id="<?php echo $this->options_name ?>[skip_posts]" name="<?php echo $this->options_name ?>[skip_posts]" value="<?php echo $options['skip_posts']; ?>" />
 									<span class="description"><?php _e('(comma seperated, f.e.: 2, 7, 13, 32)', $this->domain) ?></span>
 								</label>
 							</td>
@@ -504,9 +510,26 @@ SIDEBAR;
 						</tr>
 						</table>
 					</fieldset>
+					<p class="submit">
+						<input class="button-primary" type="submit" disabled="disabled" value="<?php _e('Save Changes') ?>" />
+					</p>
+				</div>
+			</div>
 
+			<div class="postbox">
+				<div class="handlediv" title="<?php _e('Click to toggle') ?>"><br/></div>
+				<h3 class="hndle"><?php _e('Other Settings') ?></h3>
+				<div class="inside">
 					<fieldset class="options">
 						<table class="form-table">
+						<tr>
+							<th><?php _e('Check encoded content', $this->domain) ?></th>
+							<td><label><input type="checkbox" id="<?php echo $this->options_name ?>[show_encoded_check]" name="<?php echo $this->options_name ?>[show_encoded_check]" value="1" <?php checked('1', (int) $options['show_encoded_check']); ?> /> <span><?php _e('Show "sucessfully encoded" text for all encoded content, only when logged in as admin user', $this->domain) ?></span> <br /><span class="description">(this way you can check if emails are really encoded on your site)</span></label></td>
+						</tr>
+						<tr>
+							<th><?php _e('Admin menu position', $this->domain) ?></th>
+							<td><label><input type="checkbox" id="<?php echo $this->options_name ?>[own_admin_menu]" name="<?php echo $this->options_name ?>[own_admin_menu]" value="1" <?php checked('1', (int) $options['own_admin_menu']); ?> /> <span><?php _e('Show as main menu item', $this->domain) ?></span> <span class="description">(when disabled item will be shown under "General settings")</span></label></td>
+						</tr>
 						<tr>
 							<th><?php _e('Email Encoder Form Settings', $this->domain) ?></th>
 							<td><label><input type="checkbox" id="<?php echo $this->options_name ?>[powered_by]" name="<?php echo $this->options_name ?>[powered_by]" value="1" <?php checked('1', (int) $options['powered_by']); ?> /> <span><?php _e('Show the "powered by"-link on bottom of the encoder form', $this->domain) ?></span></label></td>
@@ -514,11 +537,11 @@ SIDEBAR;
 						</table>
 					</fieldset>
 					<p class="submit">
-						<input class="button-primary" type="submit" value="<?php _e('Save Changes') ?>" />
+						<input class="button-primary" type="submit" disabled="disabled" value="<?php _e('Save Changes') ?>" />
 					</p>
-				</form>
 				</div>
 			</div>
+		</form>
 
 			<div class="postbox">
 				<div class="handlediv" title="<?php _e('Click to toggle') ?>"><br/></div>
@@ -536,27 +559,31 @@ SIDEBAR;
 				<div class="handlediv" title="<?php _e('Click to toggle') ?>"><br/></div>
 				<h3 class="hndle"><?php _e('Other Plugins', $this->domain) ?></h3>
 				<div class="inside">
-					<h4><img src="<?php echo plugins_url('images/icon-wp-external-links.png', __FILE__ ) ?>" width="16" height="16" /> WP External Links -
-						<?php if (is_plugin_active('wp-external-links/wp-external-links.php') ): ?>
-							<?php _e('This plugin is already activated.', $this->domain) ?> <a href="<?php echo get_bloginfo('url') ?>/wp-admin/options-general.php?page=wp-external-links/wp-external-links.php"><?php _e('Settings') ?></a>
-						<?php elseif( file_exists( WP_PLUGIN_DIR . '/wp-external-links/wp-external-links.php') ): ?>
+					<h4><img src="<?php echo plugins_url('images/icon-wp-external-links.png', __FILE__) ?>" width="16" height="16" /> WP External Links -
+						<em>
+						<?php if (is_plugin_active('wp-external-links/wp-external-links.php')): ?>
+							<?php _e('Activated, see', $this->domain) ?> <a href="<?php echo get_bloginfo('url') ?>/wp-admin/options-general.php?page=wp-external-links/wp-external-links.php"><?php _e('Settings') ?></a>
+						<?php elseif( file_exists( WP_PLUGIN_DIR . '/wp-external-links/wp-external-links.php')): ?>
 							<a href="<?php echo get_bloginfo('url') ?>/wp-admin/plugins.php?plugin_status=inactive"><?php _e('Activate this plugin.', $this->domain) ?></a>
 						<?php else: ?>
 							<a href="<?php echo get_bloginfo('url') ?>/wp-admin/plugin-install.php?tab=search&type=term&s=WP+External+Links+freelancephp&plugin-search-input=Search+Plugins"><?php _e('Get this plugin now', $this->domain) ?></a>
 						<?php endif; ?>
+						</em>
 					</h4>
 					<p><?php _e('Manage external links on your site: open in new window/tab, set icon, add "external", add "nofollow" and more.', $this->domain) ?>
 						<br /><a href="http://wordpress.org/extend/plugins/wp-external-links/" target="_blank">WordPress.org</a> | <a href="http://www.freelancephp.net/wp-external-links-plugin/" target="_blank">FreelancePHP.net</a>
 					</p>
 
-					<h4><img src="<?php echo plugins_url('images/icon-wp-mailto-links.png', __FILE__ ) ?>" width="16" height="16" /> WP Mailto Links -
-						<?php if (is_plugin_active('wp-mailto-links/wp-mailto-links.php') ): ?>
-							<?php _e('This plugin is already activated.', $this->domain) ?> <a href="<?php echo get_bloginfo('url') ?>/wp-admin/options-general.php?page=wp-mailto-links/wp-mailto-links.php"><?php _e('Settings') ?></a>
-						<?php elseif( file_exists( WP_PLUGIN_DIR . '/wp-mailto-links/wp-mailto-links.php') ): ?>
+					<h4><img src="<?php echo plugins_url('images/icon-wp-mailto-links.png', __FILE__) ?>" width="16" height="16" /> WP Mailto Links -
+						<em>
+						<?php if (is_plugin_active('wp-mailto-links/wp-mailto-links.php')): ?>
+							<?php _e('Activated, see', $this->domain) ?> <a href="<?php echo get_bloginfo('url') ?>/wp-admin/options-general.php?page=wp-mailto-links/wp-mailto-links.php"><?php _e('Settings') ?></a>
+						<?php elseif( file_exists( WP_PLUGIN_DIR . '/wp-mailto-links/wp-mailto-links.php')): ?>
 							<a href="<?php echo get_bloginfo('url') ?>/wp-admin/plugins.php?plugin_status=inactive"><?php _e('Activate this plugin.', $this->domain) ?></a>
 						<?php else: ?>
 							<a href="<?php echo get_bloginfo('url') ?>/wp-admin/plugin-install.php?tab=search&type=term&s=WP+Mailto+Links+freelancephp&plugin-search-input=Search+Plugins"><?php _e('Get this plugin now', $this->domain) ?></a>
 						<?php endif; ?>
+						</em>
 					</h4>
 					<p><?php _e('Manage mailto links on your site and protect emails from spambots, set mail icon and more.', $this->domain) ?>
 						<br /><a href="http://wordpress.org/extend/plugins/wp-mailto-links/" target="_blank">WordPress.org</a> | <a href="http://www.freelancephp.net/wp-mailto-links-plugin/" target="_blank">FreelancePHP.net</a>
@@ -582,7 +609,7 @@ SIDEBAR;
 			<fieldset>
 				<div class="input">
 					<table>
-					<tr>
+					<tbody>
 						<tr>
 							<th><label for="email"><?php _e('Email Address:', $this->domain) ?></label></th>
 							<td><input type="text" class="regular-text" id="email" name="email" /></td>
@@ -598,27 +625,27 @@ SIDEBAR;
 						<tr>
 							<th><label for="encode_method"><?php _e('Encoding Method:', $this->domain) ?></label></th>
 							<td><select id="encode_method" name="encode_method" class="postform">
-								<?php foreach ($this->methods AS $method => $info ): ?>
+								<?php foreach ($this->methods AS $method => $info): ?>
 									<option value="<?php echo $method ?>" <?php if ($this->method == $method) echo 'selected="selected"' ?>><?php echo $info['name'] ?></option>
 								<?php endforeach; ?>
 								</select>
 								<input type="button" id="ajax_encode" value="<?php _e('Create Protected Mail Link', $this->domain) ?> &gt;&gt;" />
 							</td>
 						</tr>
-					</tr>
+					</tbody>
 					</table>
 				</div>
 				<div class="output nodis">
 					<table>
-					<tr>
+					<tbody>
 						<tr>
 							<th><label for="encoded_output"><?php _e('Protected Mail Link (code):', $this->domain) ?></label></th>
 							<td><textarea class="large-text node" id="encoded_output" name="encoded_output" cols="50" rows="4"></textarea></td>
 						</tr>
-					</tr>
+					</tbody>
 					</table>
 				</div>
-			<?php if ($this->options['powered_by'] ): ?>
+			<?php if ($this->options['powered_by']): ?>
 				<p class="powered-by"><?php _e('Powered by', $this->domain) ?> <a rel="external" href="http://www.freelancephp.net/email-encoder-php-class-wp-plugin/">Email Encoder Bundle</a></p>
 			<?php endif; ?>
 			</fieldset>
@@ -639,34 +666,14 @@ SIDEBAR;
 		$saved_options = get_option($this->options_name);
 
 		// backwards compatible (old values)
-		if (empty($saved_options )) {
-			$saved_options = get_option($this->domain . 'options');
-		}
-
 		if (empty($saved_options)) {
-			foreach ($this->options AS $key => $option) {
-				$saved_options[$key] = $this->options[$key];
-			}
-		}
-
-		// upgrade to 0.40
-		if (! isset($saved_options['class_name'])) {
-			// set default
-			$saved_options['class_name'] = $this->options['class_name'];
-			$saved_options['filter_posts'] = $this->options['filter_posts'];
-		}
-
-		// upgrade to 0.50
-		if (!isset($saved_options['protection_text'])) {
-			// set default
-			$saved_options['protection_text'] = $this->options['protection_text'];
-			$saved_options['skip_posts'] = $this->options['skip_posts'];
+			$saved_options = get_option($this->domain . 'options');
 		}
 
 		// set all options
 		if (!empty($saved_options)) {
-			foreach ($this->options AS $key => $option) {
-				$this->options[$key] = (empty($saved_options[$key])) ? '' : $saved_options[$key];
+			foreach ($saved_options AS $key => $value) {
+				$this->options[$key] = $value;
 			}
 		}
 
@@ -675,7 +682,7 @@ SIDEBAR;
 
 		// set widget_content filter of Widget Logic plugin
 		$widget_logic_opts = get_option('widget_logic');
-		if (is_array($widget_logic_opts ) AND key_exists('widget_logic-options-filter', $widget_logic_opts )) {
+		if (is_array($widget_logic_opts) AND key_exists('widget_logic-options-filter', $widget_logic_opts)) {
 			$this->options['widget_logic_filter'] = ($widget_logic_opts['widget_logic-options-filter'] == 'checked') ? 1 : 0;
 		}
 	}
@@ -744,25 +751,31 @@ SIDEBAR;
 	 * @return string
 	 */
 	function get_html_checked($content) {
+		if (!$this->logged_in || !$this->options['show_encoded_check']) {
+			return $content;
+		}
+
 		return $content
 				. '<a href="javascript:;" class="encoded-check"'
-				. ' title="' . _('Succesfully Encoded (this is a check and only visible when logged in as admin)', $this->domain) . '">'
+				. ' title="' . __('Successfully Encoded (this is a check and only visible when logged in as admin)', $this->domain) . '">'
 				. '<img class="encoded-check-icon" src="' . plugins_url('images/icon-email-encoder-bundle.png', __FILE__)
-				. '" alt="' . _('Encoded', $this->domain) . '" />'
-				. _('Succesfully Encoded', $this->domain) . '</a>';
+				. '" alt="' . __('Encoded', $this->domain) . '" />'
+				. __('Successfully Encoded', $this->domain) . '</a>';
 	}
 
 	/**
 	 * Encode the given email into an encoded HTML link
 	 * @param string $content
 	 * @param string $method Optional, else the default setted method will; be used
+	 * @param boolean $no_html_checked
 	 * @return string
 	 */
-	function encode($content, $method = NULL) {
+	function encode($content, $method = NULL, $no_html_checked = FALSE) {
 		// get encode method
 		$method = $this->get_method($method, $this->method);
 
-		if ($this->logged_in) {
+		// add visual check
+		if ($no_html_checked !== TRUE) {
 			$content = $this->get_html_checked($content);
 		}
 
@@ -778,7 +791,7 @@ SIDEBAR;
 	 * @param string $extra_attrs Optional
 	 * @return string
 	 */
-	function encode_email($email, $display = NULL, $method = NULL, $extra_attrs = '') {
+	function encode_email($email, $display = NULL, $method = NULL, $extra_attrs = '', $no_html_checked = FALSE) {
 		// decode entities
 		$email = html_entity_decode($email);
 
@@ -802,9 +815,12 @@ SIDEBAR;
 		$mailto = '<a class="'. $class .'" href="mailto:' . $email . '"'. $extra_attrs . '>' . $display . '</a>';
 
 		if ($method === 'enc_html') {
-			$mailto = $this->get_html_checked($mailto);
+			// add visual check
+			if ($no_html_checked !== TRUE) {
+				$mailto = $this->get_html_checked($mailto);
+			}
 		} else {
-			$mailto = $this->encode($mailto, $method);
+			$mailto = $this->encode($mailto, $method, $no_html_checked);
 		}
 
 		// get encoded email code
@@ -904,7 +920,7 @@ SIDEBAR;
 			srand((float) microtime() * 1000000);
 
 			for ($i = 0; $i < strlen($value); $i = $i + 1) {
-				$j = floor(rand( 0, 1 ));
+				$j = floor(rand( 0, 1));
 
 				if ($j == 0) {
 					$enc_value .= '&#' . ord(substr($value, $i, 1)) . ';';
@@ -938,7 +954,7 @@ if (!empty($_GET['ajaxEncodeEmail'])):
 	$email = $_GET['email'];
 	$display = (empty($_GET['display'])) ? $email : $_GET['display'];
 
-	echo $WP_Email_Encoder_Bundle->encode_email($email, $display, $method);
+	echo $WP_Email_Encoder_Bundle->encode_email($email, $display, $method, '', TRUE);
 	exit;
 endif;
 
@@ -982,7 +998,7 @@ endif;
  * @return string
  */
 if (!function_exists('encode_email_filter')):
-	function encode_email_filter($content, $enc_tags = TRUE, $enc_mailtos = TRUE, $enc_plain_emails = TRUE ) {
+	function encode_email_filter($content, $enc_tags = TRUE, $enc_mailtos = TRUE, $enc_plain_emails = TRUE) {
 		global $WP_Email_Encoder_Bundle;
 		return $WP_Email_Encoder_Bundle->filter($content, $enc_tags, $enc_mailtos, $enc_plain_emails);
 	}

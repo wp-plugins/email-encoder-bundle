@@ -3,13 +3,13 @@ Contributors: freelancephp
 Tags: email address, protect, antispam, mailto, spambot, secure, e-mail, email, mail, obfuscate, encode, encoder, encrypt, hide, bot, crawl, spider, robots, spam, protection, harvest, harvesting, security
 Requires at least: 3.0.0
 Tested up to: 3.5.1
-Stable tag: 0.70
+Stable tag: 0.71
 
-Encode mailto links and (plain) email addresses and hide them from spambots. Easy to use, plugin works directly when activated. Save way to protect email addresses on your site.
+Encode mailto links and (plain) email addresses on your site and hide them from spambots. Easy to use, plugin works directly when activated.
 
 == Description ==
 
-Encode mailto links and (plain) email addresses and hide them from spambots. Easy to use, plugin works directly when activated. Save way to protect email addresses on your site.
+Encode mailto links and (plain) email addresses on your site and hide them from spambots. Easy to use, plugin works directly when activated.
 
 = Features =
 * Protect all emails and mailto links
@@ -86,7 +86,15 @@ It's possible to filter all widgets by using the Widget Logic plugin and activat
 
 == Changelog ==
 
-= 0.70 (latest) =
+= 0.71 (latest) =
+* Option to make own menu item (in admin panel) for this plugin
+* Option for showing "successfully encoded" check
+* Fixed bug showing errors for calling wrong translate function
+* Fixed bug always showing encoded check on site (for html encode method)
+* Added workaround for saving disabled checkboxes in options table
+* Fixed bug where encoded check was also applied on output of encoding form
+
+= 0.70 =
 * Fixed bug with extra params
 * Changed texts and added help tabs on admin options page
 * Changed visual check for encoded mails/content by showing icon and success message
