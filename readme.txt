@@ -3,7 +3,7 @@ Contributors: freelancephp
 Tags: email address, protect, antispam, mailto, spambot, secure, e-mail, email, mail, obfuscate, encode, encoder, encrypt, hide, bot, crawl, spider, robots, spam, protection, harvest, harvesting, security
 Requires at least: 3.0.0
 Tested up to: 3.5.1
-Stable tag: 0.71
+Stable tag: 0.80
 
 Encode mailto links and (plain) email addresses on your site and hide them from spambots. Easy to use, plugin works directly when activated.
 
@@ -71,6 +71,11 @@ function extra_encode_filters($filter_callback) {
 	add_filter('bbp_get_topic_content', $filter_callback);
 }`
 
+= Can I use special characters (like Chinese)? =
+It's only possible to use special characters for the display. And only works by using the shortcode with the HTML encode method.
+Example:
+`[email_encode method="enc_html" email="myname@myemail.nl" display="我的郵箱"]`
+
 = How to encode emails in all widgets (and not only text widgets)? =
 
 If the option 'All text widgets' is activated, only text widgets will be filtered for encoding.
@@ -86,7 +91,13 @@ It's possible to filter all widgets by using the Widget Logic plugin and activat
 
 == Changelog ==
 
-= 0.71 (latest) =
+= 0.80 (latest) =
+* Added screen settings
+* Registered metaboxes
+* Fixed bug random method
+* Workaround for display with special characters (like Chinese), works only with enc_html
+
+= 0.71 =
 * Option to make own menu item (in admin panel) for this plugin
 * Option for showing "successfully encoded" check
 * Fixed bug showing errors for calling wrong translate function

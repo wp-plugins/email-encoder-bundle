@@ -1,9 +1,13 @@
+/* Email Encoder Bundle Plugin - Admin */
 /*global jQuery*/
-// Email Encoder Bundle Plugin - Admin
 jQuery(function ($) {
 	'use strict';
 
 	var methodInfo = window.methodInfo;
+
+	$('#setting-error-settings_updated').click(function () {
+		$(this).hide();
+	});
 
 	// set info text for selected encoding method
 	$('.method-info-select')
@@ -47,24 +51,7 @@ jQuery(function ($) {
 	// add form-table class to Encoder Form tables
 	$('.email-encoder-form table').addClass('form-table');
 
-	// remove message
-	$('.settings-error:first')
-		.hide()
-		.fadeIn(600)
-		.delay(3000)
-		.fadeOut(600);
-
-	// slide postbox
-	$('.postbox').find('.handlediv, .hndle').click(function(){
-		var $inside = $(this).parent().find('.inside');
-
-		if ($inside.css('display') === 'block') {
-			$inside.css({ display:'block' }).fadeOut();
-		} else {
-			$inside.css({ display:'none' }).fadeIn();
-		}
-	});
-
+	// Workaround for saving disabled checkboxes in options db
 	// prepare checkboxes before submit
 	$('.wrap form').submit(function () {
 		// force value 0 being saved in options
@@ -76,7 +63,7 @@ jQuery(function ($) {
 			});
 	});
 
-	// enable
+	// enable submit buttons
 	$('*[type="submit"]').attr('disabled', false);
 
 });

@@ -1,5 +1,5 @@
+/* Email Encoder Bundle Plugin */
 /*global jQuery*/
-// Email Encoder Bundle Plugin
 jQuery(function($){
 	'use strict';
 
