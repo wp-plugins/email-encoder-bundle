@@ -1,32 +1,39 @@
 === Email Encoder Bundle ===
 Contributors: freelancephp
 Tags: email address, protect, antispam, mailto, spambot, secure, e-mail, email, mail, obfuscate, encode, encoder, encrypt, hide, bot, crawl, spider, robots, spam, protection, harvest, harvesting, security
-Requires at least: 3.0.0
-Tested up to: 3.5.1
-Stable tag: 0.80
+Requires at least: 3.4.0
+Tested up to: 3.8.0
+Stable tag: 1.0.0
 
-Encode mailto links and (plain) email addresses on your site and hide them from spambots. Easy to use, plugin works directly when activated.
+Encode mailto links, emailaddresses or any text and hide them from spambots. Easy to use, plugin works directly when activated.
 
 == Description ==
 
-Encode mailto links and (plain) email addresses on your site and hide them from spambots. Easy to use, plugin works directly when activated.
+Encode mailto links, emailaddresses or any text and hide them from spambots. Easy to use, plugin works directly when activated.
 
 = Features =
-* Protect all emails and mailto links
-* Check posts, widgets, comments and RSS feeds
-* Encode all kind of content (text and html)
-* Email Encoder Form (in admin and also for your site)
-* Use params in mailto links, like: cc, bcc, subject, body
+* Protect mailto links and plain emailaddresses
+* Automatically or with shortcodes
+* Scan posts, widgets and comments
+* Also protect RSS feeds
+
+Some extra features:
+* Encode any text
+* Template functions
+* Manually create protected links with the Encoder Form
 * And more...
 
-= Documentation =
-See help tab on the plugin page in the WP Admin Panel.
+= Easy to use  =
+The plugin works directly when activated. If you like you can set many options in the Admin Panel.
 
 = Support =
-Supports PHP 4.3+ and WP 3.0+.
+* Documentation - Check the Help tab on the plugin Admin page
+* [FAQ](http://wordpress.org/extend/plugins/email-encoder-bundle/faq/)
+* [Report a problem](http://wordpress.org/support/plugin/email-encoder-bundle#postform)
+* PHP 5.4+ and WP 3.4+
 
-= Contact =
-[Send your comment](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/)[ or question](http://www.freelancephp.net/contact/)
+= Like this plugin? =
+You could show your appreciation by [rating this plugin](http://wordpress.org/support/view/plugin-reviews/email-encoder-bundle) and/or [posting a comment](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/) on my blog.
 
 == Installation ==
 
@@ -40,20 +47,38 @@ Supports PHP 4.3+ and WP 3.0+.
 = How do I encode my emailaddress(es)? =
 
 In the posts you can use this shortcode:
-`[email_encode email="myname@test.nl" display="My Email"]`
+`[eeb_email email="myname@test.nl" display="My Email"]`
 
 By default mailto links like this will also be encoded:
 `<a href="mailto:myname@test.nl">My Email</a>`
 
-The default method is `JavaScript ASCII` the following output will be created in the source code of the page:
+The default method is `JS Rot13` the following output will be created in the source code of the page:
 `<script type="text/javascript">/*<![CDATA[*/ML="mo@k<insc:r.y=-Ehe a\">f/lMt";MI="4CB8HC77=D0C5HJ1>H563DB@:AF=D0C5HJ190<6C0A2JA7J;6HDBBJ5JHA=DI<B?0C5HDEI<B?0C5H4GCE";OT="";for(j=0;j<MI.length;j++){OT+=ML.charAt(MI.charCodeAt(j)-48);}document.write(OT);/*]]>*/</script><noscript>*protected email*</noscript>`
 
 This code is not readable by spambots and protects your emailaddress.
 
+= Emailaddress in a form field is being encoded in a strange way. What to do? =
+
+An emailaddress in a form field will not be encoded correctly.
+There are 2 ways to solve this problem:
+
+1. Turn of the option "Replace plain email addresses to protected mailto links". Keep in mind that this will be the case for the whole site.
+1. Add the page ID of the form to the option "Do not apply Auto-Protect on posts with ID". The page content will be skipped by the plugin.
+
+= How to use email encodig in Custom Fields? =
+
+You will have to use the template function `eeb_email()` or `eeb_content()`.
+For example, if your template contains:
+`echo get_post_meta($post->ID, 'emailaddress', TRUE);`
+
+Then change it to:
+`$emailaddress = get_post_meta($post->ID, 'emailaddress', TRUE);
+echo eeb_email($emailaddress, 'Mail Me');`
+
 = How to create mailto links that opens in a new window? =
 
 You could add extra params to the mailto link and add `target='_blank'` for opening them in a new window, like:
-`[encode_email email="yourmail@test.nl" display="My Mail" extra_attrs="target='_blank'"]`
+`[eeb_email email="yourmail@test.nl" display="My Mail" extra_attrs="target='_blank'"]`
 
 In html this will look like:
 `<a href="mailto:yourmail@test.nl" target="_blank">My Mail</a>`
@@ -63,7 +88,7 @@ In html this will look like:
 If you use other plugins that needs to be encoded you can add a callback to the action "init_email_encoder_bundle".
 For Example:
 
-`add_action('init_email_encoder_bundle', 'extra_encode_filters');
+`add_action('eeb_ready', 'extra_encode_filters');
 
 function extra_encode_filters($filter_callback) {
 	// add filters for BBPress
@@ -74,7 +99,7 @@ function extra_encode_filters($filter_callback) {
 = Can I use special characters (like Chinese)? =
 It's only possible to use special characters for the display. And only works by using the shortcode with the HTML encode method.
 Example:
-`[email_encode method="enc_html" email="myname@myemail.nl" display="我的郵箱"]`
+`[eeb_email method="enc_html" email="myname@myemail.nl" display="我的郵箱"]`
 
 = How to encode emails in all widgets (and not only text widgets)? =
 
@@ -89,9 +114,27 @@ It's possible to filter all widgets by using the Widget Logic plugin and activat
 1. Check encoded email/content when logged in as admin
 1. Email Encoder Form on the Site
 
+== Other Notes
+= Credits =
+* [Adam Hunter](http://blueberryware.net) for the encode method 'JavaScript Escape' which is taken from his plugin [Email Spam Protection](http://blueberryware.net/2008/09/14/email-spam-protection/)
+* [Tyler Akins](http://rumkin.com) for the encode method 'JavaScript ASCII Mixer'
+* Title icon on Admin Options Page was made by [Jack Cai](http://www.doublejdesign.co.uk/)
+
 == Changelog ==
 
-= 0.80 (latest) =
+= 1.0.0 =
+* NOW ONLY SUPPORT FOR PHP 5.4+ and WP 3.4.0+
+* Solved bug deleting setting values when unregister (will now be deleted on uninstall)
+* Solved bug also possible to set protection text when RSS disabled
+* Solved bug saving metaboxes settings
+* Added option support shortcodes in widgets
+* Added option removing shortcodes for RSS feed
+* Removed "random" method option
+* Changed names for action and shortcode (prefixed with eeb_), optional the old names will still be supported
+* Added template function for creating the encoder form
+* Changed class en id names of the Encoder Form
+
+= 0.80 =
 * Added screen settings
 * Registered metaboxes
 * Fixed bug random method
@@ -187,10 +230,3 @@ It's possible to filter all widgets by using the Widget Logic plugin and activat
 * Methods: default_encode, wp_antispambot, anti_email_spam, email_escape, hide_email
 * Use the tags: `[email_encode email=".." display=".."]`, `[email_encoder_form]`
 * Template function: `email_encode()`
-
-== Other Notes ==
-
-= Credits =
-* [Adam Hunter](http://blueberryware.net) for the encode method 'JavaScript Escape' which is taken from his plugin [Email Spam Protection](http://blueberryware.net/2008/09/14/email-spam-protection/)
-* [Tyler Akins](http://rumkin.com) for the encode method 'JavaScript ASCII Mixer'
-* Title icon on Admin Options Page was made by [Jack Cai](http://www.doublejdesign.co.uk/)
