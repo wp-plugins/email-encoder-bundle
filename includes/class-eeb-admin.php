@@ -76,7 +76,7 @@ class Eeb_Admin {
      */
     public function __construct() {
         // load text domain for translations
-        load_plugin_textdomain(EMAIL_ENCODER_BUNDLE_KEY, FALSE, dirname(plugin_basename(EMAIL_ENCODER_BUNDLE_FILE)) . '/lang/');
+        load_plugin_textdomain(EMAIL_ENCODER_BUNDLE_KEY, FALSE, dirname(plugin_basename(EMAIL_ENCODER_BUNDLE_FILE)) . '/languages/');
 
         // set methods
         $this->methods = array(
@@ -556,11 +556,11 @@ class Eeb_Admin {
         } else if ($key === 'this_plugin') {
 ?>
             <ul>
-                <li><a href="#" class="eeb-help-link">Documentation</a></li>
-                <li><a href="http://wordpress.org/support/plugin/email-encoder-bundle#postform" target="_blank">Report a problem</a></li>
+                <li><a href="#" class="eeb-help-link"><?php _e('Documentation', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></a></li>
+                <li><a href="http://wordpress.org/support/plugin/email-encoder-bundle#postform" target="_blank"><?php _e('Report a problem', EMAIL_ENCODER_BUNDLE_DOMAIN) ?><</a></li>
             </ul>
 
-            <p><strong><a href="http://wordpress.org/support/view/plugin-reviews/email-encoder-bundle" target="_blank">Please rate this plugin</a>!</strong></p>
+            <p><strong><a href="http://wordpress.org/support/view/plugin-reviews/email-encoder-bundle" target="_blank"><?php _e('Please rate this plugin!', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></a></strong></p>
 <?php
         } else if ($key === 'other_plugins') {
 ?>
@@ -647,53 +647,48 @@ class Eeb_Admin {
             $icon_url = plugins_url('images/icon-email-encoder-bundle.png', EMAIL_ENCODER_BUNDLE_FILE);
             $version = EMAIL_ENCODER_BUNDLE_VERSION;
 
-            $content = <<<GENERAL
-<h3><img src="{$icon_url}" width="16" height="16" /> {$plugin_title} - version {$version}</h3>
-<p>Encode mailto links and (plain) email addresses on your site and hide them from spambots. Easy to use, plugin works directly when activated.</p>
-
-<h4>Features</h4>
-<ul>
-    <li>Protect mailto links and plain emailaddresses</li>
-    <li>Automatically or with shortcodes</li>
-    <li>Scan posts, widgets and comments</li>
-    <li>Also protect RSS feeds</li>
-</ul>
-
-<h4>Some extra features</h4>
-<ul>
-    <li>Template functions</li>
-    <li>Encode all kind of text</li>
-    <li>Manually create protected links with the Encoder Form</li>
-    <li>And more...</li>
-</ul>
-GENERAL;
+            $content = sprintf(__('<h3><img src="%s" width="16" height="16" /> %s - version %s</h3>'
+                     . '<p>Encode mailto links and (plain) email addresses on your site and hide them from spambots. Easy to use, plugin works directly when activated.</p>'
+                     . '<h4>Features</h4>'
+                     . '<ul>'
+                     . '<li>Protect mailto links and plain emailaddresses</li>'
+                     . '<li>Automatically or with shortcodes</li>'
+                     . '<li>Scan posts, widgets and comments</li>'
+                     . '<li>Also protect RSS feeds</li>'
+                     . '</ul>'
+                     . '<h4>Some extra features</h4>'
+                     . '<ul>'
+                     . '<li>Template functions</li>'
+                     . '<li>Encode all kind of text</li>'
+                     . '<li>Manually create protected links with the Encoder Form</li>'
+                     . '<li>And more...</li>'
+                     . '</ul>'
+                     , EMAIL_ENCODER_BUNDLE_DOMAIN), $icon_url, $plugin_title, $version);
         } else if ($key === 'shortcodes') {
-            $content = <<<SHORTCODES
-<h3>Shortcodes</h3>
-
-<p>You can use these shortcodes within your post or page.</p>
-
-<h4>eeb_email</h4>
-<p>Create an encoded mailto link:</p>
-<p><code>[eeb_email email="..." display="..."]</code></p>
-<ul>
-<li>"display" is optional or the email wil be shown as display (also protected)</li>
-<li>"extra_attrs" is optional, example: <code>extra_attrs="target='_blank'"</code></li>
-<li>"method" is optional, else the method option will be used.</li>
-</ul>
-
-<h4>eeb_content</h4>
-<p>Encode some text:</p>
-<p><code>[eeb_content method="..."]...[/encode_content]</code></p>
-<ul>
-<li>"method" is optional, else the method option will be used.</li>
-</ul>
-
-<h4>eeb_form</h4>
-<p>Create an encoder form:</p>
-<p><code>[eeb_form]</code></p>
-SHORTCODES;
+            $content = __('<h3>Shortcodes</h3>'
+                     . '<p>You can use these shortcodes within your post or page.</p>'
+                     . '<h4>eeb_email</h4>'
+                     . '<p>Create an encoded mailto link:</p>'
+                     . '<p><code>[eeb_email email="..." display="..."]</code></p>'
+                     . '<ul>'
+                     . '<li>"display" is optional or the email wil be shown as display (also protected)</li>'
+                     . '<li>"extra_attrs" is optional, example: <code>extra_attrs="target=\'_blank\'"</code></li>'
+                     . '<li>"method" is optional, else the method option will be used.</li>'
+                     . '</ul>'
+                     . '<h4>eeb_content</h4>'
+                     . '<p>Encode some text:</p>'
+                     . '<p><code>[eeb_content method="..."]...[/encode_content]</code></p>'
+                     . '<ul>'
+                     . '<li>"method" is optional, else the method option will be used.</li>'
+                     . '</ul>'
+                     . '<h4>eeb_form</h4>'
+                     . '<p>Create an encoder form:</p>'
+                     . '<p><code>[eeb_form]</code></p>'
+                     , EMAIL_ENCODER_BUNDLE_DOMAIN);
         } else if ($key === 'templatefunctions') {
+//            $content = __('<h3>Shortcodes</h3>'
+//                     . ''
+//                     , EMAIL_ENCODER_BUNDLE_DOMAIN);
             $content = <<<TEMPLATEFUNCTIONS
 <h3>Template functions</h3>
 
@@ -733,34 +728,27 @@ if (function_exists('eeb_form')) {
 &#63;></code></pre>
 TEMPLATEFUNCTIONS;
         } else if ($key === 'hooks') {
-            $content = <<<HOOKS
-<h3>Hooks</h3>
-
-<h4>eeb_ready</h4>
-
-<p>Add extra code on initializing this plugin, like extra filters for encoding.</p>
-<pre><code><&#63;php
-add_action('eeb_ready', 'extra_encode_filters');
-
-function extra_encode_filters(\$eeb_object) {
-    add_filter('some_filter', array(\$eeb_object, 'callback_filter'));
-}
-&#63;></code></pre>
-HOOKS;
+            $content = __('<h3>Hooks</h3>'
+                     . '<h4>eeb_ready</h4>'
+                     . '<p>Add extra code on initializing this plugin, like extra filters for encoding.</p>'
+                     . '<pre><code><&#63;php' . "\n"
+                     . 'add_action(\'eeb_ready\', \'extra_encode_filters\');' . "\n\n"
+                     . 'function extra_encode_filters(\$eeb_object) {' . "\n"
+                     . '    add_filter(\'some_filter\', array(\$eeb_object, \'callback_filter\'));' . "\n"
+                     . '}' . "\n"
+                     . '&#63;></code></pre>'
+                     , EMAIL_ENCODER_BUNDLE_DOMAIN);
         } else if ($key === 'faq') {
-            $content = <<<FAQ
-<h3>FAQ</h3>
-
-<p>Please check the <a href="http://wordpress.org/extend/plugins/email-encoder-bundle/faq/" target="_blank">FAQ on the Plugin site</a>.
-FAQ;
+            $content = __('<h3>FAQ</h3>'
+                     . '<p>Please check the <a href="http://wordpress.org/extend/plugins/email-encoder-bundle/faq/" target="_blank">FAQ on the Plugin site</a>.'
+                     , EMAIL_ENCODER_BUNDLE_DOMAIN);
             } else if ($key === 'sidebar') {
-            $content = <<<SIDEBAR
-<h4>About the author</h4>
-<ul>
-    <li><a href="http://www.freelancephp.net/" target="_blank">FreelancePHP.net</a></li>
-    <li><a href="http://www.freelancephp.net/contact/" target="_blank">Contact</a></li>
-</ul>
-SIDEBAR;
+            $content = __('<h4>About the author</h4>'
+                     . '<ul>'
+                     . '<li><a href="http://www.freelancephp.net/" target="_blank">FreelancePHP.net</a></li>'
+                     . '<li><a href="http://www.freelancephp.net/contact/" target="_blank">Contact</a></li>'
+                     . '</ul>'
+                     , EMAIL_ENCODER_BUNDLE_DOMAIN);
         }
 
         return ((empty($content)) ? '' : __($content, EMAIL_ENCODER_BUNDLE_DOMAIN));

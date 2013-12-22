@@ -7,6 +7,8 @@ Author: Victor Villaverde Laan
 Version: 1.0.0
 Author URI: http://www.freelancephp.net
 License: Dual licensed under the MIT and GPL licenses
+Text Domain: email-encoder-bundle
+Domain Path: /languages
 */
 
 // plugin file
