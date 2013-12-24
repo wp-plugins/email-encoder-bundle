@@ -225,7 +225,7 @@ class Eeb_Admin {
      */
     public function plugin_action_links($links, $file) {
         if ($file == plugin_basename(EMAIL_ENCODER_BUNDLE_FILE)) {
-            $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/options-general.php?page=' . $file . '">' . __('Settings', EMAIL_ENCODER_BUNDLE_DOMAIN) . '</a>';
+            $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/options-general.php?page=' . $this->page_hook . '">' . __('Settings', EMAIL_ENCODER_BUNDLE_DOMAIN) . '</a>';
             array_unshift($links, $settings_link);
         }
 
@@ -310,7 +310,7 @@ class Eeb_Admin {
 ?>
         <div class="wrap">
             <div class="icon32" id="icon-options-custom" style="background:url(<?php echo plugins_url('images/icon-email-encoder-bundle.png', EMAIL_ENCODER_BUNDLE_FILE) ?>) no-repeat 50% 50%"><br></div>
-            <h2><?php echo get_admin_page_title() ?> - <em><small><?php _e('Protecting Your Email Addresses', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></small></em></h2>
+            <h2><?php echo get_admin_page_title() ?> - <em><small><?php _e('Protect Emailaddresses', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></small></em></h2>
 
             <?php if (isset($_GET['settings-updated']) && $_GET['settings-updated'] == 'true' && $this->options['own_admin_menu']): ?>
             <div class="updated settings-error" id="setting-error-settings_updated">
@@ -557,7 +557,7 @@ class Eeb_Admin {
 ?>
             <ul>
                 <li><a href="#" class="eeb-help-link"><?php _e('Documentation', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></a></li>
-                <li><a href="http://wordpress.org/support/plugin/email-encoder-bundle#postform" target="_blank"><?php _e('Report a problem', EMAIL_ENCODER_BUNDLE_DOMAIN) ?><</a></li>
+                <li><a href="http://wordpress.org/support/plugin/email-encoder-bundle#postform" target="_blank"><?php _e('Report a problem', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></a></li>
             </ul>
 
             <p><strong><a href="http://wordpress.org/support/view/plugin-reviews/email-encoder-bundle" target="_blank"><?php _e('Please rate this plugin!', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></a></strong></p>

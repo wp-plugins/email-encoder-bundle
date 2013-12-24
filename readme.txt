@@ -1,9 +1,9 @@
-=== Email Encoder Bundle ===
+=== Email Encoder Bundle - Protect Emailaddresses ===
 Contributors: freelancephp
 Tags: email address, protect, antispam, mailto, spambot, secure, e-mail, email, mail, obfuscate, encode, encoder, encrypt, hide, bot, crawl, spider, robots, spam, protection, harvest, harvesting, security
 Requires at least: 3.4.0
 Tested up to: 3.8.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 
 Encode mailto links, emailaddresses or any text and hide them from spambots. Easy to use, plugin works directly when activated.
 
@@ -17,7 +17,7 @@ Encode mailto links, emailaddresses or any text and hide them from spambots. Eas
 * Scan posts, widgets and comments
 * Also protect RSS feeds
 
-Some extra features:
+= Some extra features =
 * Encode any text
 * Template functions
 * Manually create protected links with the Encoder Form
@@ -33,7 +33,7 @@ The plugin works directly when activated. If you like you can set many options i
 * PHP 5.4+ and WP 3.4+
 
 = Like this plugin? =
-You could show your appreciation by [rating this plugin](http://wordpress.org/support/view/plugin-reviews/email-encoder-bundle) and/or [posting a comment](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/) on my blog.
+Show your appreciation by [rating this plugin](http://wordpress.org/support/view/plugin-reviews/email-encoder-bundle) and/or [posting a comment](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/) on my blog.
 
 == Installation ==
 
@@ -121,6 +121,10 @@ It's possible to filter all widgets by using the Widget Logic plugin and activat
 * Title icon on Admin Options Page was made by [Jack Cai](http://www.doublejdesign.co.uk/)
 
 == Changelog ==
+
+= 1.0.1 =
+* Fixed support for PHP 5.2.4+
+* Solved bug wrong "settings" link
 
 = 1.0.0 =
 * NOW ONLY SUPPORT FOR PHP 5.4+ and WP 3.4.0+

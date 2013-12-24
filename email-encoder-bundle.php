@@ -1,10 +1,10 @@
 <?php defined('ABSPATH') OR die('No direct access.');
 /*
-Plugin Name: Email Encoder Bundle
+Plugin Name: Email Encoder Bundle - Protect Emailaddresses
 Plugin URI: http://www.freelancephp.net/email-encoder-php-class-wp-plugin/
 Description: Protect email addresses on your site and hide them from spambots by using an encoding method. Easy to use, flexible .
 Author: Victor Villaverde Laan
-Version: 1.0.0
+Version: 1.0.1
 Author URI: http://www.freelancephp.net
 License: Dual licensed under the MIT and GPL licenses
 Text Domain: email-encoder-bundle
@@ -18,7 +18,7 @@ if (!defined('EMAIL_ENCODER_BUNDLE_FILE')) {
 
 // plugin version
 if (!defined('EMAIL_ENCODER_BUNDLE_VERSION')) {
-    define('EMAIL_ENCODER_BUNDLE_VERSION', '1.0.0');
+    define('EMAIL_ENCODER_BUNDLE_VERSION', '1.0.1');
 }
 
 // plugin key
@@ -34,7 +34,7 @@ if (!defined('EMAIL_ENCODER_BUNDLE_DOMAIN')) {
 // check plugin compatibility
 if (isset($wp_version)
             AND version_compare(preg_replace('/-.*$/', '', $wp_version), '3.4', '>=')
-            AND version_compare(phpversion(), '5.3.13', '>=')) {
+            AND version_compare(phpversion(), '5.2.4', '>=')) {
 
     // include classes
     require_once('includes/class-eeb-admin.php');
