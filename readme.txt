@@ -30,10 +30,9 @@ The plugin works directly when activated. If you like you can set many options i
 * Documentation - Check the Help tab on the plugin Admin page
 * [FAQ](http://wordpress.org/extend/plugins/email-encoder-bundle/faq/)
 * [Report a problem](http://wordpress.org/support/plugin/email-encoder-bundle#postform)
-* PHP 5.4+ and WP 3.4+
 
 = Like this plugin? =
-Show your appreciation by [rating this plugin](http://wordpress.org/support/view/plugin-reviews/email-encoder-bundle) and/or [posting a comment](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/) on my blog.
+Please [rate this plugin](http://wordpress.org/support/view/plugin-reviews/email-encoder-bundle) or [post a comment](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/) on my blog.
 
 == Installation ==
 
@@ -123,7 +122,7 @@ It's possible to filter all widgets by using the Widget Logic plugin and activat
 == Changelog ==
 
 = 1.0.1 =
-* Fixed support for PHP 5.2.4+
+* Fixed PHP support (same as WordPress)
 * Solved bug wrong "settings" link
 
 = 1.0.0 =
