@@ -37,11 +37,15 @@ class EebSite extends Eeb_Admin {
 
         if (is_feed()) {
         // rss feed
-            if ($this->options['filter_rss']) {
-                $rss_filters = array('the_title', 'the_content', 'the_excerpt', 'the_title_rss', 'the_content_rss', 'the_excerpt_rss',
-                                    'comment_text_rss', 'comment_author_rss', 'the_category_rss', 'the_content_feed', 'author_feed_link', 'feed_link');
+            $rss_filters = array('the_title', 'the_content', 'the_excerpt', 'the_title_rss', 'the_content_rss', 'the_excerpt_rss',
+                                'comment_text_rss', 'comment_author_rss', 'the_category_rss', 'the_content_feed', 'author_feed_link', 'feed_link');
 
-                foreach($rss_filters as $filter) {
+            foreach($rss_filters as $filter) {
+                if ($this->options['remove_shortcodes_rss']) {
+                    add_filter($filter, array($this, 'callback_rss_remove_shortcodes'), 9);
+                }
+
+                if ($this->options['filter_rss']) {
                     add_filter($filter, array($this, 'callback_filter_rss'), 100);
                 }
             }
@@ -144,6 +148,15 @@ CSS;
     public function callback_filter_rss($content) {
         $content = preg_replace($this->regexp_patterns, $this->options['protection_text_rss'], $content);
 
+        return $content;
+    }
+
+    /**
+     * RSS Callback Remove shortcodes
+     * @param string $content
+     * @return string
+     */
+    public function callback_rss_remove_shortcodes($content) {
         // strip shortcodes like [eeb_content], [eeb_form]
         $content = strip_shortcodes($content);
 

@@ -1,18 +1,18 @@
-=== Email Encoder Bundle - Protect Emailaddresses ===
+=== Email Encoder Bundle - Protect Email Address ===
 Contributors: freelancephp
 Tags: email address, protect, antispam, mailto, spambot, secure, e-mail, email, mail, obfuscate, encode, encoder, encrypt, hide, bot, crawl, spider, robots, spam, protection, harvest, harvesting, security
 Requires at least: 3.4.0
 Tested up to: 3.8.0
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 
-Encode mailto links, emailaddresses or any text and hide them from spambots. Easy to use, plugin works directly when activated.
+Encode mailto links, email addresses or any text and hide them from spambots. Easy to use, plugin works directly when activated.
 
 == Description ==
 
-Encode mailto links, emailaddresses or any text and hide them from spambots. Easy to use, plugin works directly when activated.
+Encode mailto links, email addresses or any text and hide them from spambots. Easy to use, plugin works directly when activated.
 
 = Features =
-* Protect mailto links and plain emailaddresses
+* Protect mailto links and plain email addresses
 * Automatically or with shortcodes
 * Scan posts, widgets and comments
 * Also protect RSS feeds
@@ -43,7 +43,7 @@ Please [rate this plugin](http://wordpress.org/support/view/plugin-reviews/email
 
 == Frequently Asked Questions ==
 
-= How do I encode my emailaddress(es)? =
+= How do I encode my email address(es)? =
 
 In the posts you can use this shortcode:
 `[eeb_email email="myname@test.nl" display="My Email"]`
@@ -54,11 +54,11 @@ By default mailto links like this will also be encoded:
 The default method is `JS Rot13` the following output will be created in the source code of the page:
 `<script type="text/javascript">/*<![CDATA[*/ML="mo@k<insc:r.y=-Ehe a\">f/lMt";MI="4CB8HC77=D0C5HJ1>H563DB@:AF=D0C5HJ190<6C0A2JA7J;6HDBBJ5JHA=DI<B?0C5HDEI<B?0C5H4GCE";OT="";for(j=0;j<MI.length;j++){OT+=ML.charAt(MI.charCodeAt(j)-48);}document.write(OT);/*]]>*/</script><noscript>*protected email*</noscript>`
 
-This code is not readable by spambots and protects your emailaddress.
+This code is not readable by spambots and protects your email address.
 
-= Emailaddress in a form field is being encoded in a strange way. What to do? =
+= Email address in a form field is being encoded in a strange way. What to do? =
 
-An emailaddress in a form field will not be encoded correctly.
+An email address in a form field will not be encoded correctly.
 There are 2 ways to solve this problem:
 
 1. Turn of the option "Replace plain email addresses to protected mailto links". Keep in mind that this will be the case for the whole site.
@@ -121,12 +121,15 @@ It's possible to filter all widgets by using the Widget Logic plugin and activat
 
 == Changelog ==
 
+= 1.0.2 =
+* Solved bug wrong "settings" link
+* Solved bug removing shortcodes RSS feed
+
 = 1.0.1 =
 * Fixed PHP support (same as WordPress)
-* Solved bug wrong "settings" link
 
 = 1.0.0 =
-* NOW ONLY SUPPORT FOR PHP 5.4+ and WP 3.4.0+
+* NOW ONLY SUPPORT FOR WP 3.4.0+
 * Solved bug deleting setting values when unregister (will now be deleted on uninstall)
 * Solved bug also possible to set protection text when RSS disabled
 * Solved bug saving metaboxes settings

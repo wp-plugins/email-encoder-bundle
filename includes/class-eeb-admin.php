@@ -225,7 +225,8 @@ class Eeb_Admin {
      */
     public function plugin_action_links($links, $file) {
         if ($file == plugin_basename(EMAIL_ENCODER_BUNDLE_FILE)) {
-            $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/options-general.php?page=' . $this->page_hook . '">' . __('Settings', EMAIL_ENCODER_BUNDLE_DOMAIN) . '</a>';
+            $page = ($this->options['own_admin_menu']) ? 'admin.php' : 'options-general.php';
+            $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/' . $page . '?page=email-encoder-bundle-settings">' . __('Settings', EMAIL_ENCODER_BUNDLE_DOMAIN) . '</a>';
             array_unshift($links, $settings_link);
         }
 
@@ -310,7 +311,7 @@ class Eeb_Admin {
 ?>
         <div class="wrap">
             <div class="icon32" id="icon-options-custom" style="background:url(<?php echo plugins_url('images/icon-email-encoder-bundle.png', EMAIL_ENCODER_BUNDLE_FILE) ?>) no-repeat 50% 50%"><br></div>
-            <h2><?php echo get_admin_page_title() ?> - <em><small><?php _e('Protect Emailaddresses', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></small></em></h2>
+            <h2><?php echo get_admin_page_title() ?> - <em><small><?php _e('Protect Email Addresses', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></small></em></h2>
 
             <?php if (isset($_GET['settings-updated']) && $_GET['settings-updated'] == 'true' && $this->options['own_admin_menu']): ?>
             <div class="updated settings-error" id="setting-error-settings_updated">
@@ -380,7 +381,7 @@ class Eeb_Admin {
                             <span><?php _e('Protect mailto links, like f.e. <code>&lt;a href="info@myemail.com"&gt;My Email&lt;/a&gt;</code>', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></span>
                         <br/><label><input type="checkbox" id="encode_emails" name="<?php echo $this->options_name ?>[encode_emails]" value="1" <?php checked('1', (int) $options['encode_emails']); ?> disabled="disabled" />
                             <span><?php _e('Replace plain email addresses to protected mailto links.', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></span>
-                            <span class="description notice-form-field-bug"><br/><?php _e('Notice: be carefull with this option when using emailaddresses on form fields, please <a href="http://wordpress.org/extend/plugins/email-encoder-bundle/faq/" target="_blank">check the FAQ</a> for more info.', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></span>
+                            <span class="description notice-form-field-bug"><br/><?php _e('Notice: be carefull with this option when using email addresses on form fields, please <a href="http://wordpress.org/extend/plugins/email-encoder-bundle/faq/" target="_blank">check the FAQ</a> for more info.', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></span>
                         </label>
                     <br/>
                     </td>
@@ -450,7 +451,7 @@ class Eeb_Admin {
                 <tr>
                     <th><?php _e('Set protection text in RSS feeds', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></th>
                     <td><label><input type="text" id="protection_text" class="regular-text" name="<?php echo $this->options_name ?>[protection_text_rss]" value="<?php echo $options['protection_text_rss']; ?>" />
-                            <br/><span class="description"><?php _e('Used as replacement for emailaddresses in RSS feeds.', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></span>
+                            <br/><span class="description"><?php _e('Used as replacement for email addresses in RSS feeds.', EMAIL_ENCODER_BUNDLE_DOMAIN) ?></span>
                         </label>
                     </td>
                 </tr>
@@ -651,7 +652,7 @@ class Eeb_Admin {
                      . '<p>Encode mailto links and (plain) email addresses on your site and hide them from spambots. Easy to use, plugin works directly when activated.</p>'
                      . '<h4>Features</h4>'
                      . '<ul>'
-                     . '<li>Protect mailto links and plain emailaddresses</li>'
+                     . '<li>Protect mailto links and plain email addresses</li>'
                      . '<li>Automatically or with shortcodes</li>'
                      . '<li>Scan posts, widgets and comments</li>'
                      . '<li>Also protect RSS feeds</li>'
@@ -711,7 +712,7 @@ if (function_exists('eeb_content')) {
 <p>You can pas an extra optional param: <code>method</code></p>
 
 <h4>eeb_email_filter()</h4>
-<p>Filter given content and encode all emailaddresses or mailto links:</p>
+<p>Filter given content and encode all email addresses or mailto links:</p>
 <pre><code><&#63;php
 if (function_exists('eeb_email_filter')) {
     echo eeb_email_filter('Some content with email like info@somedomein.com or a mailto link');
