@@ -1,23 +1,34 @@
 <?php defined('ABSPATH') OR die('No direct access.');
 
 /**
- * Class EebSite
+ * Class Eeb_Site (singleton)
+ *
+ * Contains all nescessary code for the site part
  *
  * @extends Eeb_Admin
- * @description Contains all nescessary code for the site part
+ * @final
  *
  * @package Email_Encoder_Bundle
  * @category WordPress Plugins
  */
-if (!class_exists('EebSite')):
+if (!class_exists('Eeb_Site') && class_exists('Eeb_Admin')):
 
-class EebSite extends Eeb_Admin {
+final class Eeb_Site extends Eeb_Admin {
 
     /**
-     * Regexp
-     * @var array
+     * @var Eeb_Site  Singleton instance
      */
-    protected $regexp_patterns = array(
+    static private $instance = null;
+
+    /**
+     * @var boolean
+     */
+    private $is_admin_user = false;
+
+    /**
+     * @var array  Regular expresssions
+     */
+    private $regexp_patterns = array(
         'mailto' => '/<a([^<>]*?)href=["\']mailto:(.*?)["\'](.*?)>(.*?)<\/a[\s+]*>/is',
         'email' => '/([A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6})/is',
     );
@@ -25,15 +36,39 @@ class EebSite extends Eeb_Admin {
     /**
      * Constructor
      */
-    public function __construct() {
+    protected function __construct() {
         parent::__construct();
+    }
+
+    /**
+     * Make private to prevent multiple objects
+     */
+    private function __clone() {}
+
+    /**
+     * Get singleton instance
+     */
+    static public function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new Eeb_Site();
+        }
+
+        return self::$instance;
     }
 
     /**
      * wp action
      */
     public function wp() {
-        parent::wp();
+        $this->is_admin_user = current_user_can('manage_options');
+
+        if (is_admin()) {
+            return;
+        }
+
+        // apply filters
+        $this->regexp_patterns['mailto'] = apply_filters('eeb_mailto_regexp', $this->regexp_patterns['mailto']);
+        $this->regexp_patterns['email'] = apply_filters('eeb_email_regexp', $this->regexp_patterns['email']);
 
         if (is_feed()) {
         // rss feed
@@ -123,7 +158,7 @@ CSS;
 
     /* -------------------------------------------------------------------------
      *  Filter Callbacks
-     * -------------------------------------------------------------------------/
+     * ------------------------------------------------------------------------*/
 
     /**
      * WP filter callback
@@ -137,7 +172,7 @@ CSS;
             return $content;
         }
 
-        return $this->encode_email_filter($content, TRUE, $this->options['encode_mailtos'], $this->options['encode_emails']);
+        return $this->encode_email_filter($content, true, $this->options['encode_mailtos'], $this->options['encode_emails']);
     }
 
     /**
@@ -166,12 +201,12 @@ CSS;
     /**
      * Filter content for encoding
      * @param string $content
-     * @param boolean $enc_tags Optional, default TRUE
-     * @param boolean $enc_mailtos  Optional, default TRUE
-     * @param boolean $enc_plain_emails Optional, default TRUE
+     * @param boolean $enc_tags Optional, default true
+     * @param boolean $enc_mailtos  Optional, default true
+     * @param boolean $enc_plain_emails Optional, default true
      * @return string
      */
-    public function encode_email_filter($content, $enc_tags = TRUE, $enc_mailtos = TRUE, $enc_plain_emails = TRUE) {
+    public function encode_email_filter($content, $enc_tags = true, $enc_mailtos = true, $enc_plain_emails = true) {
         // encode mailto links
         if ($enc_mailtos) {
             $content = preg_replace_callback($this->regexp_patterns['mailto'], array($this, 'callback_encode_email'), $content);
@@ -208,7 +243,7 @@ CSS;
 
     /* -------------------------------------------------------------------------
      *  Shortcode Functions
-     * -------------------------------------------------------------------------/
+     * ------------------------------------------------------------------------*/
 
     /**
      * Shortcode showing encoder form
@@ -216,7 +251,6 @@ CSS;
      */
     public function shortcode_email_encoder_form() {
         // add style and script for ajax encoder
-//        wp_enqueue_script('email_encoder', plugins_url('js/src/email-encoder-bundle.js', EMAIL_ENCODER_BUNDLE_FILE), array('jquery'), EMAIL_ENCODER_BUNDLE_VERSION);
         wp_enqueue_script('email_encoder', plugins_url('js/email-encoder-bundle.min.js', EMAIL_ENCODER_BUNDLE_FILE), array('jquery'), EMAIL_ENCODER_BUNDLE_VERSION);
 
         return $this->get_encoder_form();
@@ -234,8 +268,8 @@ CSS;
 
         $email = $attrs['email'];
         $display = (key_exists('display', $attrs)) ? $attrs['display'] : $attrs['email'];
-        $method = (key_exists('method', $attrs)) ? $attrs['method'] : NULL;
-        $extra_attrs = (key_exists('extra_attrs', $attrs)) ? $attrs['extra_attrs'] : NULL;
+        $method = (key_exists('method', $attrs)) ? $attrs['method'] : null;
+        $extra_attrs = (key_exists('extra_attrs', $attrs)) ? $attrs['extra_attrs'] : null;
 
         $encoded = $this->encode_email($email, $display, $extra_attrs, $method);
 
@@ -255,7 +289,7 @@ CSS;
      * @return string
      */
     public function shortcode_encode_content($attrs, $content = '') {
-        $method = (is_array($attrs) && key_exists('method', $attrs)) ? $attrs['method'] : NULL;
+        $method = (is_array($attrs) && key_exists('method', $attrs)) ? $attrs['method'] : null;
 
         return $this->encode_content($content, $method);
     }
@@ -271,7 +305,7 @@ CSS;
      * @param boolean $no_html_checked
      * @return string
      */
-    public function encode_content($content, $method = NULL, $no_html_checked = FALSE) {
+    public function encode_content($content, $method = null, $no_html_checked = false) {
         // get encode method
         $method = $this->get_method($method, $this->method);
 
@@ -279,7 +313,7 @@ CSS;
         $content = $this->{$method}($content);
 
         // add visual check
-        if ($no_html_checked !== TRUE) {
+        if ($no_html_checked !== true) {
             $content = $this->get_success_check($content);
         }
 
@@ -295,7 +329,7 @@ CSS;
      * @param boolean $no_html_checked
      * @return string
      */
-    public function encode_email($email, $display = NULL, $extra_attrs = '', $method = NULL, $no_html_checked = FALSE) {
+    public function encode_email($email, $display = null, $extra_attrs = '', $method = null, $no_html_checked = false) {
         // get encode method
         $method = $this->get_method($method, $this->method);
 
@@ -303,7 +337,7 @@ CSS;
         $email = html_entity_decode($email);
 
         // set email as display
-        if ($display === NULL) {
+        if ($display === null) {
             $display = $email;
 
             if ($method === 'enc_html') {
@@ -323,7 +357,7 @@ CSS;
 
         if ($method === 'enc_html') {
             // add visual check
-            if ($no_html_checked !== TRUE) {
+            if ($no_html_checked !== true) {
                 $mailto = $this->get_success_check($mailto);
             }
         } else {
@@ -354,7 +388,12 @@ CSS;
 
     /* -------------------------------------------------------------------------
      *  Different Encoding Methods
-     * -------------------------------------------------------------------------/
+     * ------------------------------------------------------------------------*/
+
+    //public function encodeURIComponent($str) {
+    //    $revert = array('%21'=>'!', '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')');
+    //    return strtr(rawurlencode($str), $revert);
+    //}
 
     /**
      * ASCII method
@@ -371,7 +410,7 @@ CSS;
         for ($i = 0; $i < strlen($mail_link); $i ++) {
             $l = substr($mail_link, $i, 1);
 
-            if (strpos($mail_letters, $l) === FALSE) {
+            if (strpos($mail_letters, $l) === false) {
                 $p = rand(0, strlen($mail_letters));
                 $mail_letters = substr($mail_letters, 0, $p) .
                 $l . substr($mail_letters, $p, strlen($mail_letters));
@@ -394,6 +433,12 @@ CSS;
         return '<script type="text/javascript">'
                 . '(function(){'
                 . 'var ml="'. $mail_letters_enc .'",mi="'. $mail_indices .'",o="";'
+//                . 'console.log("-----");'
+//                . 'console.log("' . $mail_letters_enc . '");'
+//                . 'console.log("' . $this->encodeURIComponent($mail_letters_enc) . '");'
+//                . 'var test = decodeURIComponent(\'' . $this->encodeURIComponent($mail_letters_enc) . '\');'
+//                . 'test = test.replace("\", "");'
+//                . 'console.log(test);'
                 . 'for(var j=0,l=mi.length;j<l;j++){'
                 . 'o+=ml.charAt(mi.charCodeAt(j)-48);'
                 . '}document.write(o);'
@@ -413,12 +458,12 @@ CSS;
     private function enc_escape($value) {
         $string = 'document.write(\'' . $value . '\')';
 
-        /* break string into array of characters, we can't use string_split because its php5 only :( */
+        // break string into array of characters, we can't use string_split because its php5 only
         $split = preg_split('||', $string);
         $out =  '<script type="text/javascript">' . "eval(unescape('";
 
         foreach ($split as $c) {
-            /* preg split will return empty first and last characters, check for them and ignore */
+            // preg split will return empty first and last characters, check for them and ignore
             if (!empty($c)) {
                 $out .= '%' . dechex(ord($c));
             }
@@ -464,7 +509,7 @@ CSS;
         return $emailNOSPAMaddy;
     }
 
-} // end class EebSite
+} // end class Eeb_Site
 
 endif;
 

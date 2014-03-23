@@ -12,7 +12,7 @@
  *
  * @deprecated
  *
- * @global EebSite $EebSite
+ * @global Eeb_Site $Eeb_Site
  * @param string $email
  * @param string $display  if non given will be same as email
  * @param string $method Optional, else the default setted method will; be used
@@ -20,7 +20,7 @@
  * @return string
  */
 if (!function_exists('encode_email')):
-    function encode_email($email, $display = NULL, $method = NULL, $extra_attrs = '') {
+    function encode_email($email, $display = null, $method = null, $extra_attrs = '') {
         return eeb_email($email, $display, $extra_attrs, $method);
     }
 endif;
@@ -30,13 +30,13 @@ endif;
  *
  * @deprecated
  *
- * @global EebSite $EebSite
+ * @global Eeb_Site $Eeb_Site
  * @param string $content
- * @param string $method Optional, default NULL
+ * @param string $method Optional, default null
  * @return string
  */
 if (!function_exists('encode_content')):
-    function encode_content($content, $method = NULL) {
+    function encode_content($content, $method = null) {
         return eeb_content($content, $method);
     }
 endif;
@@ -46,15 +46,15 @@ endif;
  *
  * @deprecated
  *
- * @global EebSite $EebSite
+ * @global Eeb_Site $Eeb_Site
  * @param string $content
- * @param boolean $enc_tags Optional, default TRUE
- * @param boolean $enc_mailtos  Optional, default TRUE
- * @param boolean $enc_plain_emails Optional, default TRUE
+ * @param boolean $enc_tags Optional, default true
+ * @param boolean $enc_mailtos  Optional, default true
+ * @param boolean $enc_plain_emails Optional, default true
  * @return string
  */
 if (!function_exists('encode_email_filter')):
-    function encode_email_filter($content, $enc_tags = TRUE, $enc_mailtos = TRUE, $enc_plain_emails = TRUE) {
+    function encode_email_filter($content, $enc_tags = true, $enc_mailtos = true, $enc_plain_emails = true) {
         return eeb_email_filter($content, $enc_tags, $enc_mailtos, $enc_plain_emails);
     }
 endif;

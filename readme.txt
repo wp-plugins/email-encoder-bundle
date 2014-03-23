@@ -2,37 +2,38 @@
 Contributors: freelancephp
 Tags: email address, protect, antispam, mailto, spambot, secure, e-mail, email, mail, obfuscate, encode, encoder, encrypt, hide, bot, crawl, spider, robots, spam, protection, harvest, harvesting, security
 Requires at least: 3.4.0
-Tested up to: 3.8.0
-Stable tag: 1.0.2
+Tested up to: 3.8.1
+Stable tag: 1.1.0
 
-Encode mailto links, email addresses or any text and hide them from spambots. Easy to use, plugin works directly when activated.
+Encode mailto links, email addresses or any text (like phone numbers) and hide them from spambots. All mailto links in your posts, pages, comments and (text) widgets will be protected immediatly after activation.
 
 == Description ==
 
-Encode mailto links, email addresses or any text and hide them from spambots. Easy to use, plugin works directly when activated.
+Encode mailto links, email addresses or any text (like phone numbers) and hide them from spambots. All mailto links in your posts, pages, comments and (text) widgets will be protected immediatly after activation.
 
 = Features =
-* Protect mailto links and plain email addresses
-* Automatically or with shortcodes
-* Scan posts, widgets and comments
-* Also protect RSS feeds
-
-= Some extra features =
-* Encode any text
-* Template functions
-* Manually create protected links with the Encoder Form
-* And more...
+* Protect mailto links
+* Protect plain email addresses
+* Protect your RSS feeds
+* Encode any text (like phone numbers)
+* Shortcodes, template functions, action and filter hooks, Encoder Form and more...
 
 = Easy to use  =
-The plugin works directly when activated. If you like you can set many options in the Admin Panel.
+The plugin works out-of-the-box. All mailto links in your posts, pages, comments and (text) widgets will be encoded (by default).
+If you also want to encode plain email address as well, you have to check that option.
 
-= Support =
+= Help =
 * Documentation - Check the Help tab on the plugin Admin page
 * [FAQ](http://wordpress.org/extend/plugins/email-encoder-bundle/faq/)
 * [Report a problem](http://wordpress.org/support/plugin/email-encoder-bundle#postform)
 
+= Github =
+I published the code on [Github](https://github.com/freelancephp/Email-Encoder-Bundle) so anybody can commit code changes.
+
 = Like this plugin? =
-Please [rate this plugin](http://wordpress.org/support/view/plugin-reviews/email-encoder-bundle) or [post a comment](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/) on my blog.
+No donation needed.
+If you want to support, just [rate this plugin](http://wordpress.org/support/view/plugin-reviews/email-encoder-bundle).
+And/or place [a comment on my blog](http://www.freelancephp.net/email-encoder-php-class-wp-plugin/).
 
 == Installation ==
 
@@ -68,10 +69,10 @@ There are 2 ways to solve this problem:
 
 You will have to use the template function `eeb_email()` or `eeb_content()`.
 For example, if your template contains:
-`echo get_post_meta($post->ID, 'emailaddress', TRUE);`
+`echo get_post_meta($post->ID, 'emailaddress', true);`
 
 Then change it to:
-`$emailaddress = get_post_meta($post->ID, 'emailaddress', TRUE);
+`$emailaddress = get_post_meta($post->ID, 'emailaddress', true);
 echo eeb_email($emailaddress, 'Mail Me');`
 
 = How to create mailto links that opens in a new window? =
@@ -121,18 +122,22 @@ It's possible to filter all widgets by using the Widget Logic plugin and activat
 
 == Changelog ==
 
+= 1.1.0 =
+* Added filters for changing regular expression for mailto links and email addresses
+* Fixed bug don't encode when loading admin panel
+
 = 1.0.2 =
-* Solved bug wrong "settings" link
-* Solved bug removing shortcodes RSS feed
+* Fixed bug wrong "settings" link
+* Fixed bug removing shortcodes RSS feed
 
 = 1.0.1 =
 * Fixed PHP support (same as WordPress)
 
 = 1.0.0 =
 * NOW ONLY SUPPORT FOR WP 3.4.0+
-* Solved bug deleting setting values when unregister (will now be deleted on uninstall)
-* Solved bug also possible to set protection text when RSS disabled
-* Solved bug saving metaboxes settings
+* Fixed bug deleting setting values when unregister (will now be deleted on uninstall)
+* Fixed bug also possible to set protection text when RSS disabled
+* Fixed bug saving metaboxes settings
 * Added option support shortcodes in widgets
 * Added option removing shortcodes for RSS feed
 * Removed "random" method option
@@ -164,7 +169,7 @@ It's possible to filter all widgets by using the Widget Logic plugin and activat
 * Added hook "init_email_encoder_form" to add custom filters (of other plugins)
 * Added JavaScript code encapsulation for ASCII method
 * Solved reinstalling bug for setting right encoding method
-* Solved bug shortcodes encoded with HTML method
+* Fixed bug shortcodes encoded with HTML method
 
 = 0.50 =
 * Added encode method for all kind of contents (template function and shortcode "encode_content")
@@ -178,7 +183,7 @@ It's possible to filter all widgets by using the Widget Logic plugin and activat
 * Widget Logic options bug
 
 = 0.41 =
-* Solved bug by improving regular expression for mailto links
+* Fixed bug by improving regular expression for mailto links
 * Changed script attribute `language` to `type`
 * Script only loaded on options page (hopefully this solves the dashboard toggle problem some people are experiencing)
 * Added support for widget_content filter of the Logic Widget plugin

@@ -30,7 +30,6 @@ jQuery(function ($) {
         $('.notice-form-field-bug')[$encodeEmails.prop('checked') ? 'fadeIn' : 'fadeOut']();
     });
 
-
     // add form-table class to Encoder Form tables
     $('.eeb-form table').addClass('form-table');
 
