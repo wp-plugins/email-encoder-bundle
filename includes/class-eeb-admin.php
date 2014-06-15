@@ -646,7 +646,7 @@ abstract class Eeb_Admin {
                      . '</ul>'
                      . '<h4>eeb_content</h4>'
                      . '<p>Encode some text:</p>'
-                     . '<p><code>[eeb_content method="..."]...[/encode_content]</code></p>'
+                     . '<p><code>[eeb_content method="..."]...[/eeb_content]</code></p>'
                      . '<ul>'
                      . '<li>"method" is optional, else the method option will be used.</li>'
                      . '</ul>'
@@ -717,6 +717,15 @@ abstract class Eeb_Admin {
                      . '    return \'-your regular expression-\';' . "\n"
                      . '}' . "\n"
                      . '&#63;></code></pre>'
+                     . '<h4>eeb_form_content</h4>'
+                     . '<p>Filter for changing the form layout.</p>'
+                     . '<pre><code><&#63;php' . "\n"
+                     . 'add_filter(\'eeb_form_content\', \'eeb_form_content\', 10, 4);' . "\n\n"
+                     . 'function eeb_form_content($content, $labels, $show_powered_by, $methods) {' . "\n"
+                     . '    // add a &lt;div&gt;-wrapper' . "\n"
+                     . '    return \'&lt;div class="form-wrapper"&gt;\' . $content . \'&lt;/div&gt;\';' . "\n"
+                     . '}' . "\n"
+                     . '&#63;></code></pre>'
                      , EMAIL_ENCODER_BUNDLE_DOMAIN);
         } else if ($key === 'faq') {
             $content = __('<h3>FAQ</h3>'
@@ -745,24 +754,31 @@ abstract class Eeb_Admin {
      * @return string
      */
     public function get_encoder_form() {
-        $lang_email = __('Email Address:', EMAIL_ENCODER_BUNDLE_DOMAIN);
-        $lang_display = __('Display Text:', EMAIL_ENCODER_BUNDLE_DOMAIN);
-        $lang_mailto = __('Mailto Link:', EMAIL_ENCODER_BUNDLE_DOMAIN);
-        $lang_method = __('Encoding Method:', EMAIL_ENCODER_BUNDLE_DOMAIN);
-        $lang_create = __('Create Protected Mail Link &gt;&gt;', EMAIL_ENCODER_BUNDLE_DOMAIN);
-        $lang_output = __('Protected Mail Link (code):', EMAIL_ENCODER_BUNDLE_DOMAIN);
-
         $method_options = '';
-        foreach ($this->methods as $method => $info) {
-            $method_options .= '<option value="' . $method . '"' . (($this->method == $method) ? ' selected="selected"' : '') . '>' . $info['name'] . '</option>';
+        foreach ($this->methods as $method_name => $info) {
+            $method_options .= '<option value="' . $method_name . '"' . (($this->method == $method_name) ? ' selected="selected"' : '') . '>' . $info['name'] . '</option>';
         }
 
+        $show_powered_by = (bool) $this->options['powered_by'];
         $powered_by = '';
-        if ($this->options['powered_by']) {
+        if ($show_powered_by) {
             $powered_by .= '<p class="powered-by">' . __('Powered by', EMAIL_ENCODER_BUNDLE_DOMAIN) . ' <a rel="external" href="http://www.freelancephp.net/email-encoder-php-class-wp-plugin/">Email Encoder Bundle</a></p>';
         }
 
-        return <<<FORM
+        $labels = array(
+            'email' => __('Email Address:', EMAIL_ENCODER_BUNDLE_DOMAIN),
+            'display' => __('Display Text:', EMAIL_ENCODER_BUNDLE_DOMAIN),
+            'mailto' => __('Mailto Link:', EMAIL_ENCODER_BUNDLE_DOMAIN),
+            'method' => __('Encoding Method:', EMAIL_ENCODER_BUNDLE_DOMAIN),
+            'create_link' => __('Create Protected Mail Link &gt;&gt;', EMAIL_ENCODER_BUNDLE_DOMAIN),
+            'output' => __('Protected Mail Link (code):', EMAIL_ENCODER_BUNDLE_DOMAIN),
+            'method_options' => $method_options,
+            'powered_by' => $powered_by,
+        );
+
+        extract($labels);
+
+        $form = <<<FORM
 <div class="eeb-form">
     <form>
         <fieldset>
@@ -770,23 +786,23 @@ abstract class Eeb_Admin {
                 <table>
                 <tbody>
                     <tr>
-                        <th><label for="eeb-email">{$lang_email}</label></th>
+                        <th><label for="eeb-email">{$email}</label></th>
                         <td><input type="text" class="regular-text" id="eeb-email" name="eeb-email" /></td>
                     </tr>
                     <tr>
-                        <th><label for="eeb-display">{$lang_display}</label></th>
+                        <th><label for="eeb-display">{$display}</label></th>
                         <td><input type="text" class="regular-text" id="eeb-display" name="eeb-display" /></td>
                     </tr>
                     <tr>
-                        <th>{$lang_mailto}</th>
+                        <th>{$mailto}</th>
                         <td><span class="eeb-example"></span></td>
                     </tr>
                     <tr>
-                        <th><label for="eeb-encode-method">{$lang_method}</label></th>
+                        <th><label for="eeb-encode-method">{$method}</label></th>
                         <td><select id="eeb-encode-method" name="eeb-encode-method" class="postform">
                                 {$method_options}
                             </select>
-                            <input type="button" id="eeb-ajax-encode" name="eeb-ajax-encode" value="{$lang_create}" />
+                            <input type="button" id="eeb-ajax-encode" name="eeb-ajax-encode" value="{$create_link}" />
                         </td>
                     </tr>
                 </tbody>
@@ -796,7 +812,7 @@ abstract class Eeb_Admin {
                 <table>
                 <tbody>
                     <tr>
-                        <th><label for="eeb-encoded-output">{$lang_output}</label></th>
+                        <th><label for="eeb-encoded-output">{$output}</label></th>
                         <td><textarea class="large-text node" id="eeb-encoded-output" name="eeb-encoded-output" cols="50" rows="4"></textarea></td>
                     </tr>
                 </tbody>
@@ -807,6 +823,11 @@ abstract class Eeb_Admin {
     </form>
 </div>
 FORM;
+
+         // apply filters
+        $form = apply_filters('eeb_form_content', $form, $labels, $show_powered_by, $this->methods);
+
+        return $form;
     }
 
 } // end class Eeb_Admin

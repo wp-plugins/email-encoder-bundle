@@ -4,7 +4,7 @@ Plugin Name: Email Encoder Bundle - Protect Email Address
 Plugin URI: http://www.freelancephp.net/email-encoder-php-class-wp-plugin/
 Description: Protect email addresses on your site and hide them from spambots by using an encoding method. Easy to use, flexible .
 Author: Victor Villaverde Laan
-Version: 1.1.0
+Version: 1.2.0
 Author URI: http://www.freelancephp.net
 License: Dual licensed under the MIT and GPL licenses
 Text Domain: email-encoder-bundle
@@ -12,7 +12,7 @@ Domain Path: /languages
 */
 
 // constants
-if (!defined('EMAIL_ENCODER_BUNDLE_VERSION')) { define('EMAIL_ENCODER_BUNDLE_VERSION', '1.1.0'); }
+if (!defined('EMAIL_ENCODER_BUNDLE_VERSION')) { define('EMAIL_ENCODER_BUNDLE_VERSION', '1.2.0'); }
 if (!defined('EMAIL_ENCODER_BUNDLE_FILE')) { define('EMAIL_ENCODER_BUNDLE_FILE', __FILE__); }
 if (!defined('EMAIL_ENCODER_BUNDLE_KEY')) { define('EMAIL_ENCODER_BUNDLE_KEY', 'WP_Email_Encoder_Bundle'); }
 if (!defined('EMAIL_ENCODER_BUNDLE_DOMAIN')) { define('EMAIL_ENCODER_BUNDLE_DOMAIN', 'email-encoder-bundle'); }
@@ -42,12 +42,6 @@ if (isset($wp_version)
         echo $Eeb_Site->encode_email($email, $display, '', $method, true);
         exit;
     endif;
-
-    // for testing purposes
-    if (file_exists($_SERVER['DOCUMENT_ROOT'] . 'wp/plugins/wp-plugin-tester/tests/test-email-encoder-bundle.php')) {
-        require_once($_SERVER['DOCUMENT_ROOT'] . 'wp/plugins/wp-plugin-tester/wp-plugin-tester.php');
-        require_once($_SERVER['DOCUMENT_ROOT'] . 'wp/plugins/wp-plugin-tester/tests/test-email-encoder-bundle.php');
-    }
 
 } else {
 
