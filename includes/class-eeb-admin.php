@@ -142,7 +142,7 @@ abstract class Eeb_Admin {
             }
         }
 
-        if ($saved_options['version'] != EMAIL_ENCODER_BUNDLE_VERSION) {
+        if (!isset($saved_options['version']) || $saved_options['version'] != EMAIL_ENCODER_BUNDLE_VERSION) {
             if (empty($saved_options['version'])) {
                 if ($upgrade) {
                 // upgrade from version < 1.0.0

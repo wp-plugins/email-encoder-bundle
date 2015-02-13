@@ -2,8 +2,8 @@
 Contributors: freelancephp
 Tags: email address, protect, antispam, mailto, spambot, secure, e-mail, email, mail, obfuscate, encode, encoder, encrypt, hide, bot, crawl, spider, robots, spam, protection, harvest, harvesting, security
 Requires at least: 3.4.0
-Tested up to: 3.9.1
-Stable tag: 1.2.0
+Tested up to: 4.1.0
+Stable tag: 1.2.1
 
 Encode mailto links, email addresses, phone numbers and any text to hide them from (spam)bots. Mailto links will be protected automatically after activating plugin.
 
@@ -47,12 +47,12 @@ In the posts you can use this shortcode:
 But mailto links will be encoded automatically (option is on by default):
 `<a href="mailto:myname@test.nl">My Email</a>`
 
-The source of the page will now contain encoded script, like:
+The visitors will see everything as normal, but the source behind it will now be encoded (for spambots), and looks like:
 `<script type="text/javascript">/*<![CDATA[*/ML="mo@k<insc:r.y=-Ehe a\">f/lMt";MI="4CB8HC77=D0C5HJ1>H563DB@:AF=D0C5HJ190<6C0A2JA7J;6HDBBJ5JHA=DI<B?0C5HDEI<B?0C5H4GCE";OT="";for(j=0;j<MI.length;j++){OT+=ML.charAt(MI.charCodeAt(j)-48);}document.write(OT);/*]]>*/</script><noscript>*protected email*</noscript>`
 
 This code is not readable by spambots and protects your email address.
 
-= How do I encode phone nummbers or other text? =
+= How do I encode phone numbers or other text? =
 
 Just use the following shortcode within your posts:
 `[eeb_content]35-01235-468113[/eeb_content]`
@@ -64,7 +64,7 @@ For other parts of your site you can use the template function `eeb_content()`.
 An email address in a form field will not be encoded correctly.
 There are 2 ways to solve this problem:
 
-1. Turn of the option "Replace plain email addresses to protected mailto links". Keep in mind that this will be the case for the whole site.
+1. Turn off the option "Replace plain email addresses to protected mailto links". Keep in mind that this will be the case for the whole site.
 1. Add the page ID of the form to the option "Do not apply Auto-Protect on posts with ID". The page content will be skipped by the plugin.
 
 = How to use email encodig in Custom Fields? =
@@ -106,7 +106,7 @@ Example:
 = How to encode emails in all widgets (and not only text widgets)? =
 
 If the option 'All text widgets' is activated, only text widgets will be filtered for encoding.
-It's possible to filter all widgets by using the Widget Logic plugin and activate the 'widget_content' filter.
+It's possible to filter all widgets by using the [Widget Logic Plugin](https://wordpress.org/plugins/widget-logic/) and activate the 'widget_content' filter.
 
 [Do you have another question? Please ask me](http://www.freelancephp.net/contact/)
 
@@ -123,6 +123,9 @@ It's possible to filter all widgets by using the Widget Logic plugin and activat
 * Title icon on Admin Options Page was made by [Jack Cai](http://www.doublejdesign.co.uk/)
 
 == Changelog ==
+
+= 1.2.1 =
+* Fixed bug index php error
 
 = 1.2.0 =
 * Added filter for Encoder Form content (eeb_form_content)
