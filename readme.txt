@@ -2,10 +2,10 @@
 Contributors: freelancephp
 Tags: email address, protect, antispam, mailto, spambot, secure, e-mail, email, mail, obfuscate, encode, encoder, encrypt, hide, bot, crawl, spider, robots, spam, protection, harvest, harvesting, security
 Requires at least: 3.4.0
-Tested up to: 4.1.0
-Stable tag: 1.2.1
+Tested up to: 4.1.1
+Stable tag: 1.3.0
 
-Encode mailto links, email addresses, phone numbers and any text to hide them from (spam)bots. Mailto links will be protected automatically after activating plugin.
+Encode mailto links, email addresses, phone numbers and any text to hide them from (spam)bots. Mailto links will be protected automatically.
 
 == Description ==
 
@@ -13,8 +13,10 @@ Encode mailto links, email addresses, phone numbers and any text to hide them fr
 
 = Features =
 * Protect mailto links and plain email addresses
-* Protect phone numbers (or any text/html)
+* Protect phone numbers (or any text or html)
+* Also supports special chars, like é, â, ö, Chinese characters etcetera
 * Also protect your RSS feeds
+
 * Use shortcodes, template functions, action and filter hooks
 * Use the Encoder Form to manually create encoded scripts
 
@@ -99,9 +101,8 @@ function extra_encode_filters($filter_callback) {
 }`
 
 = Can I use special characters (like Chinese)? =
-It's only possible to use special characters for the display. And only works by using the shortcode with the HTML encode method.
-Example:
-`[eeb_email method="enc_html" email="myname@myemail.nl" display="我的郵箱"]`
+
+Yes, since version 1.3.0 also specail characters are supported.
 
 = How to encode emails in all widgets (and not only text widgets)? =
 
@@ -123,6 +124,10 @@ It's possible to filter all widgets by using the [Widget Logic Plugin](https://w
 * Title icon on Admin Options Page was made by [Jack Cai](http://www.doublejdesign.co.uk/)
 
 == Changelog ==
+
+= 1.3.0 =
+* Also support special chars for the javascript methods, like é, â, ö, Chinese chars etcetera
+* Fixed bug unchecking options "use shortcode" and "use deprecated"
 
 = 1.2.1 =
 * Fixed bug index php error
