@@ -31,6 +31,7 @@ final class Eeb_Site extends Eeb_Admin {
     private $regexp_patterns = array(
         'mailto' => '/<a([^<>]*?)href=["\']mailto:(.*?)["\'](.*?)>(.*?)<\/a[\s+]*>/is',
         'email' => '/([A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6})/is',
+        'input' => '/<input([^>]*)value=["\'][\s+]*([A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6})[\s+]*["\']([^>]*)>/is',
     );
 
     /**
@@ -172,7 +173,7 @@ CSS;
             return $content;
         }
 
-        return $this->encode_email_filter($content, true, $this->options['encode_mailtos'], $this->options['encode_emails']);
+        return $this->encode_email_filter($content, true, $this->options['encode_mailtos'], $this->options['encode_emails'], $this->options['encode_fields']);
     }
 
     /**
@@ -204,9 +205,15 @@ CSS;
      * @param boolean $enc_tags Optional, default true
      * @param boolean $enc_mailtos  Optional, default true
      * @param boolean $enc_plain_emails Optional, default true
+     * @param boolean $enc_input_fields Optional, default true
      * @return string
      */
-    public function encode_email_filter($content, $enc_tags = true, $enc_mailtos = true, $enc_plain_emails = true) {
+    public function encode_email_filter($content, $enc_tags = true, $enc_mailtos = true, $enc_plain_emails = true, $enc_input_fields = true) {
+        // encode input fields with prefilled email address
+        if ($enc_input_fields) {
+            $content = preg_replace_callback($this->regexp_patterns['input'], array($this, 'callback_encode_input_field'), $content);
+        }
+
         // encode mailto links
         if ($enc_mailtos) {
             $content = preg_replace_callback($this->regexp_patterns['mailto'], array($this, 'callback_encode_email'), $content);
@@ -218,10 +225,7 @@ CSS;
         }
 
         // workaround for double encoding bug when auto-protect mailto is enabled and method is enc_html
-        if ($this->options['encode_mailtos'] == 1) {
-            // change back to html tag
-            $content = str_replace('[a-replacement]', '<a', $content);
-        }
+        $content = str_replace('[a-replacement]', '<a', $content);
 
         return $content;
     }
@@ -233,12 +237,37 @@ CSS;
      */
     public function callback_encode_email($match) {
         if (count($match) < 3) {
-            return $this->encode_email($match[1]);
+            $encoded = $this->encode_email($match[1]);
         } else if (count($match) == 3) {
-            return $this->encode_email($match[2]);
+            $encoded = $this->encode_email($match[2]);
+        } else {
+            $encoded = $this->encode_email($match[2], $match[4], $match[1] . ' ' . $match[3]);
         }
 
-        return $this->encode_email($match[2], $match[4], $match[1] . ' ' . $match[3]);
+        // workaround for double encoding bug when auto-protect mailto is enabled and method is enc_html
+        $encoded = str_replace('<a', '[a-replacement]', $encoded);
+
+        return $encoded;
+    }
+
+    /**
+     * Callback for encoding input field with email address
+     * @param array $match
+     * @return string
+     */
+    public function callback_encode_input_field($match) {
+        if ($this->method === 'enc_html') {
+            // enc_html method
+            $email = $match[2];
+            $encoded_email = $this->enc_html($email);
+
+            $encoded = str_replace($email , $encoded_email, $match[0]);
+            $encoded = $this->get_success_check($encoded);
+        } else {
+            $encoded = $this->encode_content($match[0]);
+        }
+
+        return $encoded;
     }
 
     /* -------------------------------------------------------------------------
@@ -275,10 +304,7 @@ CSS;
         $encoded = $this->encode_email($email, $display, $extra_attrs, $method);
 
         // workaround for double encoding bug when auto-protect mailto is enabled and method is enc_html
-        if ($this->options['encode_mailtos'] == 1 && $method === 'enc_html') {
-            // change html tag to entity
-            $encoded = str_replace('<a', '[a-replacement]', $encoded);
-        }
+        $encoded = str_replace('<a', '[a-replacement]', $encoded);
 
         return $encoded;
     }
@@ -299,46 +325,24 @@ CSS;
      *  Encode Functions
      * -------------------------------------------------------------------------/
 
-
-    /**
-     * Encode the link text to support UTF8 caracter
-     * Solution found @ http://php.net/manual/en/function.utf8-decode.php#85034
-     * @param string $string
-     * @return string
-     */
-
-    function charset_decode_utf_8 ($string) {
-        /* Only do the slow convert if there are 8-bit characters */
-        /* avoid using 0xA0 (\240) in ereg ranges. RH73 does not like that */
-        if (! preg_match("[\200-\237]", $string) and ! preg_match("[\241-\377]", $string))
-            return $string;
-
-        // decode three byte unicode characters
-        $string = preg_replace("/([\340-\357])([\200-\277])([\200-\277])/e", "'&#'.((ord('\\1')-224)*4096 + (ord('\\2')-128)*64 + (ord('\\3')-128)).';'", $string);
-
-        // decode two byte unicode characters
-        $string = preg_replace("/([\300-\337])([\200-\277])/e", "'&#'.((ord('\\1')-192)*64+(ord('\\2')-128)).';'", $string);
-
-        return $string;
-    }
-
     /**
      * Encode the given email into an encoded HTML link
      * @param string $content
      * @param string $method Optional, else the default setted method will; be used
-     * @param boolean $no_html_checked
+     * @param boolean $no_html_checked  Optional
+     * @param string $protection_text  Optional
      * @return string
      */
-
-    public function encode_content($content, $method = null, $no_html_checked = false) {
-        // doesn't work with javascript encoding
-//        $content = $this->charset_decode_utf_8($content);
+    public function encode_content($content, $method = null, $no_html_checked = false, $protection_text = null) {
+        if ($protection_text === null) {
+            $protection_text = $this->options['protection_text_content'];
+        }
 
         // get encode method
         $method = $this->get_method($method, $this->method);
 
         // get encoded email code
-        $content = $this->{$method}($content);
+        $content = $this->{$method}($content, $protection_text);
 
         // add visual check
         if ($no_html_checked !== true) {
@@ -389,7 +393,7 @@ CSS;
                 $mailto = $this->get_success_check($mailto);
             }
         } else {
-            $mailto = $this->encode_content($mailto, $method, $no_html_checked);
+            $mailto = $this->encode_content($mailto, $method, $no_html_checked, $this->options['protection_text']);
         }
 
         // get encoded email code
@@ -418,19 +422,15 @@ CSS;
      *  Different Encoding Methods
      * ------------------------------------------------------------------------*/
 
-    //public function encodeURIComponent($str) {
-    //    $revert = array('%21'=>'!', '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')');
-    //    return strtr(rawurlencode($str), $revert);
-    //}
-
     /**
      * ASCII method
      * Based on function from Tyler Akins (http://rumkin.com/tools/mailto_encoder/)
      *
      * @param string $value
+     * @param string $protection_text
      * @return string
      */
-    private function enc_ascii($value) {
+    private function enc_ascii($value, $protection_text) {
         $mail_link = $value;
 
         // first encode, so special chars can be supported
@@ -469,7 +469,7 @@ CSS;
                 . '}document.write(decodeURIComponent(o));' // decode at the end, this way special chars can be supported
                 . '}());'
                 . '</script><noscript>'
-                . $this->options['protection_text']
+                . $protection_text
                 . '</noscript>';
     }
 
@@ -489,9 +489,10 @@ CSS;
      * Taken from the plugin "Email Spam Protection" by Adam Hunter (http://blueberryware.net/2008/09/14/email-spam-protection/)
      *
      * @param string $value
+     * @param string $protection_text
      * @return string
      */
-    private function enc_escape($value) {
+    private function enc_escape($value, $protection_text) {
         $string = 'document.write(\'' . $value . '\')';
 
         // break string into array of characters, we can't use string_split because its php5 only
@@ -506,7 +507,7 @@ CSS;
         }
 
         $out .= "'))" . '</script><noscript>'
-            . $this->options['protection_text']
+            . $protection_text
             . '</noscript>';
 
         return $out;
